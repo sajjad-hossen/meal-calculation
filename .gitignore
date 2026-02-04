@@ -1,0 +1,21 @@
+# Node.js
+node_modules/
+dist/
+.env
+
+# .NET
+bin/
+obj/
+appsettings.Development.json
+
+# IDEs
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.sln.docstates
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
