@@ -15,6 +15,6 @@ namespace Backend.Models
         
         public int BuyerUserId { get; set; }
         [ForeignKey("BuyerUserId")]
-        public User Buyer { get; set; }
+        public User? Buyer { get; set; }
     }
 }
