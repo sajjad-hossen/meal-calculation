@@ -8,9 +8,11 @@ import AddMealModal from '../components/AddMealModal';
 interface Meal {
     id: number;
     userId: number;
+    user?: {
+        name: string;
+    };
     date: string;
     mealCount: number;
-    // We might want to joint this with User name in backend, or fetch users to map names
 }
 
 const Meals = () => {
@@ -83,8 +85,7 @@ const Meals = () => {
                     <table>
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>User ID</th>
+                                <th>Member</th>
                                 <th>Count</th>
                                 <th>Actions</th>
                             </tr>
@@ -93,7 +94,7 @@ const Meals = () => {
                             {meals.map((meal) => (
                                 <tr key={meal.id}>
                                     <td>{new Date(meal.date).toLocaleDateString()}</td>
-                                    <td>{meal.userId}</td>
+                                    <td>{meal.user?.name || meal.userId}</td>
                                     <td>{meal.mealCount}</td>
                                     <td>
                                         <Dropdown

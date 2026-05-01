@@ -8,6 +8,7 @@ import AddMemberModal from '../components/AddMemberModal';
 
 interface Member extends UserSummaryDto {
     // extending summary for now, but real member model might differ
+    id: number;
     status?: string;
 }
 
@@ -47,7 +48,7 @@ const Members = () => {
     };
 
     const handleDeleteMember = async (id: number) => {
-        if (!confirm('Are you sure you want to delete this member? This will also delete their meals and deposits.')) return;
+        if (!confirm('Are you sure you want to delete this member? They will be removed from the list, but their past data will remain for historical calculation.')) return;
 
         try {
             await fetchJson(`/Users/${id}`, {
@@ -94,7 +95,7 @@ const Members = () => {
                         </thead>
                         <tbody>
                             {members.map((member) => (
-                                <tr key={member.userId}>
+                                <tr key={member.id}>
                                     <td>
                                         <div className="font-medium">{member.name}</div>
                                     </td>
@@ -114,7 +115,7 @@ const Members = () => {
                                                 {
                                                     label: 'Delete',
                                                     icon: Trash2,
-                                                    onClick: () => handleDeleteMember(member.userId),
+                                                    onClick: () => handleDeleteMember(member.id),
                                                     className: 'text-red-500'
                                                 }
                                             ]}

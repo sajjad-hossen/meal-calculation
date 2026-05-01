@@ -8,6 +8,9 @@ import AddDepositModal from '../components/AddDepositModal';
 interface Deposit {
     id: number;
     userId: number;
+    user?: {
+        name: string;
+    };
     amount: number;
     date: string;
 }
@@ -82,8 +85,7 @@ const Deposits = () => {
                     <table>
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>User ID</th>
+                                <th>Member</th>
                                 <th>Amount</th>
                                 <th>Actions</th>
                             </tr>
@@ -92,7 +94,7 @@ const Deposits = () => {
                             {deposits.map((d) => (
                                 <tr key={d.id}>
                                     <td>{new Date(d.date).toLocaleDateString()}</td>
-                                    <td>{d.userId}</td>
+                                    <td>{d.user?.name || d.userId}</td>
                                     <td>{d.amount.toFixed(2)}</td>
                                     <td>
                                         <Dropdown

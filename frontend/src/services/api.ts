@@ -21,5 +21,10 @@ export async function fetchJson<T>(url: string, options?: RequestInit): Promise<
     throw new Error(`API Error: ${response.status} ${errorText}`);
   }
 
-  return response.json();
+  if (response.status === 204) {
+    return {} as T;
+  }
+
+  const text = await response.text();
+  return text ? JSON.parse(text) : {} as T;
 }

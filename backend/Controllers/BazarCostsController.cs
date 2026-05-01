@@ -22,13 +22,13 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BazarCost>>> GetBazarCosts()
         {
-            return await _context.BazarCosts.ToListAsync();
+            return await _context.BazarCosts.Include(b => b.Buyer).ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<BazarCost>> GetBazarCost(int id)
         {
-            var bazarCost = await _context.BazarCosts.FindAsync(id);
+            var bazarCost = await _context.BazarCosts.Include(b => b.Buyer).FirstOrDefaultAsync(b => b.Id == id);
 
             if (bazarCost == null)
             {

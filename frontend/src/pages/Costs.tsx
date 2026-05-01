@@ -10,7 +10,11 @@ interface Cost {
     id: number;
     amount: number;
     date: string;
-    description?: string; // Assuming maybe description exists or just date/amount
+    description?: string;
+    buyer?: {
+        name: string;
+    };
+    buyerUserId?: number;
 }
 
 const Costs = () => {
@@ -112,6 +116,7 @@ const Costs = () => {
                             <thead>
                                 <tr>
                                     <th>Date</th>
+                                    <th>Buyer</th>
                                     <th>Amount</th>
                                     <th>Actions</th>
                                 </tr>
@@ -120,6 +125,7 @@ const Costs = () => {
                                 {bazarCosts.map(c => (
                                     <tr key={c.id}>
                                         <td>{new Date(c.date).toLocaleDateString()}</td>
+                                        <td>{c.buyer?.name || 'N/A'}</td>
                                         <td>{c.amount.toFixed(2)}</td>
                                         <td>
                                             <Dropdown

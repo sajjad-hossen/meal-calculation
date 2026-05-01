@@ -21,7 +21,7 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Where(u => u.Status != "Deleted").ToListAsync();
         }
 
         [HttpPost]
@@ -54,7 +54,7 @@ namespace Backend.Controllers
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
+            user.Status = "Deleted";
             await _context.SaveChangesAsync();
             return NoContent();
         }
