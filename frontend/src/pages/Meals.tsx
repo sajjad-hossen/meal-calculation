@@ -280,7 +280,7 @@ const Meals = () => {
                                                             disabled={isSaving}
                                                             style={(() => {
                                                                 // Color coding by meal count
-                                                                const colorMap: Record<number, { bg: string; border: string; color: string }> = {
+                                                                 const colorMap: Record<number, { bg: string; border: string; color: string }> = {
                                                                     0: { bg: 'var(--card-bg)', border: 'var(--border-color)', color: 'var(--text-secondary)' },
                                                                     1: { bg: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59, 130, 246, 0.5)', color: 'rgb(59, 130, 246)' },
                                                                     2: { bg: 'rgba(34, 197, 94, 0.15)', border: 'rgba(34, 197, 94, 0.5)', color: 'rgb(34, 197, 94)' },
@@ -291,15 +291,16 @@ const Meals = () => {
                                                                     7: { bg: 'rgba(14, 165, 233, 0.15)', border: 'rgba(14, 165, 233, 0.5)', color: 'rgb(14, 165, 233)' },
                                                                     8: { bg: 'rgba(20, 184, 166, 0.15)', border: 'rgba(20, 184, 166, 0.5)', color: 'rgb(20, 184, 166)' },
                                                                     9: { bg: 'rgba(245, 158, 11, 0.15)', border: 'rgba(245, 158, 11, 0.5)', color: 'rgb(245, 158, 11)' },
-                                                                    10: { bg: 'rgba(220, 38, 38, 0.2)', border: 'rgba(220, 38, 38, 0.6)', color: 'rgb(220, 38, 38)' },
                                                                 };
-                                                                const scheme = colorMap[currentValue] || colorMap[0];
+                                                                // For values 10 and above, use a shared high-intensity style
+                                                                const maxStyle = { bg: 'rgba(220, 38, 38, 0.2)', border: 'rgba(220, 38, 38, 0.6)', color: 'rgb(220, 38, 38)' };
+                                                                const scheme = currentValue >= 10 ? maxStyle : (colorMap[currentValue] || colorMap[0]);
                                                                 return {
                                                                     padding: '0.35rem 0.5rem',
                                                                     borderRadius: '0.375rem',
                                                                     border: '1px solid',
                                                                     background: isSaved ? 'rgba(34, 197, 94, 0.25)' : scheme.bg,
-                                                                    color: currentValue === 0 ? scheme.color : scheme.color,
+                                                                    color: scheme.color,
                                                                     fontWeight: currentValue > 0 ? 600 : 400,
                                                                     fontSize: '0.875rem',
                                                                     width: '60px',
@@ -310,7 +311,7 @@ const Meals = () => {
                                                                 };
                                                             })()}
                                                         >
-                                                            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                                                            {Array.from({ length: 6 }, (_, i) => i).map((n) => (
                                                                 <option key={n} value={n}>
                                                                     {n}
                                                                 </option>
