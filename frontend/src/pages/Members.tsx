@@ -5,6 +5,7 @@ import type { UserSummaryDto } from '../types';
 import { UserPlus, Edit, Trash2 } from 'lucide-react';
 import AddMemberModal from '../components/AddMemberModal';
 import ConfirmModal from '../components/ConfirmModal';
+import { useAuth } from '../components/AuthContext';
 
 interface Member extends UserSummaryDto {
     // extending summary for now, but real member model might differ
@@ -13,6 +14,8 @@ interface Member extends UserSummaryDto {
 }
 
 const Members = () => {
+    const { user: authUser } = useAuth();
+    const isManager = authUser?.role === 'Manager';
     const [members, setMembers] = useState<Member[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -90,10 +93,12 @@ const Members = () => {
         <div>
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Members</h1>
-                <button className="btn btn-primary" onClick={() => { setEditingMember(null); setIsModalOpen(true); }}>
-                    <UserPlus size={18} />
-                    Add Member
-                </button>
+                {isManager && (
+                    <button className="btn btn-primary" onClick={() => { setEditingMember(null); setIsModalOpen(true); }}>
+                        <UserPlus size={18} />
+                        Add Member
+                    </button>
+                )}
             </div>
 
             <AddMemberModal
@@ -139,22 +144,24 @@ const Members = () => {
                                         </span>
                                     </td>
                                     <td>
-                                        <div className="flex items-center gap-3">
-                                            <button
-                                                onClick={() => handleEditMember(member)}
-                                                className="text-slate-400 hover:text-primary-color transition-colors"
-                                                title="Edit"
-                                            >
-                                                <Edit size={18} />
-                                            </button>
-                                            <button
-                                                onClick={() => setMemberToDelete(member.id)}
-                                                className="text-slate-400 hover:text-red-500 transition-colors"
-                                                title="Delete"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
+                                        {isManager && (
+                                            <div className="flex items-center gap-3">
+                                                <button
+                                                    onClick={() => handleEditMember(member)}
+                                                    className="text-slate-400 hover:text-primary-color transition-colors"
+                                                    title="Edit"
+                                                >
+                                                    <Edit size={18} />
+                                                </button>
+                                                <button
+                                                    onClick={() => setMemberToDelete(member.id)}
+                                                    className="text-slate-400 hover:text-red-500 transition-colors"
+                                                    title="Delete"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
+                                        )}
                                     </td>
                                 </tr>
                             ))}

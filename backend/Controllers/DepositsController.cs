@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Backend.Data;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DepositsController : ControllerBase
     {
         private readonly MessContext _context;
@@ -38,6 +40,7 @@ namespace Backend.Controllers
             return deposit;
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult<Deposit>> PostDeposit(Deposit deposit)
         {
@@ -47,6 +50,7 @@ namespace Backend.Controllers
             return CreatedAtAction(nameof(GetDeposit), new { id = deposit.Id }, deposit);
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDeposit(int id, Deposit deposit)
         {
@@ -76,6 +80,7 @@ namespace Backend.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDeposit(int id)
         {

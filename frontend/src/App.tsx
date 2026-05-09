@@ -5,21 +5,35 @@ import Members from './pages/Members';
 import Meals from './pages/Meals';
 import Deposits from './pages/Deposits';
 import Costs from './pages/Costs';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Unauthorized from './pages/Unauthorized';
+import { AuthProvider } from './components/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import './App.css';
 
 function App() {
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/members" element={<Members />} />
-          <Route path="/meals" element={<Meals />} />
-          <Route path="/deposits" element={<Deposits />} />
-          <Route path="/costs" element={<Costs />} />
-        </Routes>
-      </Layout>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+            
+            {/* Protected Routes for all authenticated users */}
+            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/members" element={<ProtectedRoute><Members /></ProtectedRoute>} />
+            <Route path="/meals" element={<ProtectedRoute><Meals /></ProtectedRoute>} />
+            <Route path="/deposits" element={<ProtectedRoute><Deposits /></ProtectedRoute>} />
+            <Route path="/costs" element={<ProtectedRoute><Costs /></ProtectedRoute>} />
+            
+            {/* Manager only routes */}
+            <Route path="/register" element={<ProtectedRoute roles={['Manager']}><Register /></ProtectedRoute>} />
+          </Routes>
+        </Layout>
+      </Router>
+    </AuthProvider>
   );
 }
 

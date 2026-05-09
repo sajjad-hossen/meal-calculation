@@ -23,6 +23,11 @@ namespace Backend.Data
             // Decimal precision
             modelBuilder.Entity<Deposit>().Property(p => p.Amount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<BazarCost>().Property(p => p.Amount).HasColumnType("decimal(18,2)");
+
+            // Unique Email
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
         }
     }
 }

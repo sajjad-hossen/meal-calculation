@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Backend.Data;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BazarCostsController : ControllerBase
     {
         private readonly MessContext _context;
@@ -38,6 +40,7 @@ namespace Backend.Controllers
             return bazarCost;
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult<BazarCost>> PostBazarCost(BazarCost bazarCost)
         {
@@ -47,6 +50,7 @@ namespace Backend.Controllers
             return CreatedAtAction(nameof(GetBazarCost), new { id = bazarCost.Id }, bazarCost);
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBazarCost(int id, BazarCost bazarCost)
         {
@@ -76,6 +80,7 @@ namespace Backend.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBazarCost(int id)
         {

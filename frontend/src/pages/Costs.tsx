@@ -3,6 +3,7 @@ import { fetchJson } from '../services/api';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import AddBazarCostModal from '../components/AddBazarCostModal';
 import ConfirmModal from '../components/ConfirmModal';
+import { useAuth } from '../components/AuthContext';
 
 interface Cost {
   id: number;
@@ -16,6 +17,8 @@ interface Cost {
 }
 
 const Costs = () => {
+  const { user: authUser } = useAuth();
+  const isManager = authUser?.role === 'Manager';
   const [bazarCosts, setBazarCosts] = useState<Cost[]>([]);
   const [loading, setLoading] = useState(true);
   const [isBazarModalOpen, setIsBazarModalOpen] = useState(false);
@@ -98,9 +101,11 @@ const Costs = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Bazar Costs</h1>
-        <button className="btn btn-primary" onClick={() => { setEditingCost(null); setIsBazarModalOpen(true); }}>
-          <Plus size={18} /> Add Bazar Cost
-        </button>
+        {isManager && (
+          <button className="btn btn-primary" onClick={() => { setEditingCost(null); setIsBazarModalOpen(true); }}>
+            <Plus size={18} /> Add Bazar Cost
+          </button>
+        )}
       </div>
       <AddBazarCostModal
         isOpen={isBazarModalOpen}
@@ -139,22 +144,24 @@ const Costs = () => {
                   <td>{c.buyer?.name || 'N/A'}</td>
                   <td>{c.amount.toFixed(2)}</td>
                   <td>
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => handleEditCost(c)}
-                        className="text-slate-400 hover:text-primary-color transition-colors"
-                        title="Edit"
-                      >
-                        <Edit size={18} />
-                      </button>
-                      <button
-                        onClick={() => setBazarToDelete(c.id)}
-                        className="text-slate-400 hover:text-red-500 transition-colors"
-                        title="Delete"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
+                    {isManager && (
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => handleEditCost(c)}
+                          className="text-slate-400 hover:text-primary-color transition-colors"
+                          title="Edit"
+                        >
+                          <Edit size={18} />
+                        </button>
+                        <button
+                          onClick={() => setBazarToDelete(c.id)}
+                          className="text-slate-400 hover:text-red-500 transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -4,6 +4,7 @@ import { fetchJson } from '../services/api';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import AddDepositModal from '../components/AddDepositModal';
 import ConfirmModal from '../components/ConfirmModal';
+import { useAuth } from '../components/AuthContext';
 
 interface Deposit {
     id: number;
@@ -16,6 +17,8 @@ interface Deposit {
 }
 
 const Deposits = () => {
+    const { user: authUser } = useAuth();
+    const isManager = authUser?.role === 'Manager';
     const [deposits, setDeposits] = useState<Deposit[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -97,10 +100,12 @@ const Deposits = () => {
         <div>
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Deposits</h1>
-                <button className="btn btn-primary" onClick={() => { setEditingDeposit(null); setIsModalOpen(true); }}>
-                    <Plus size={18} />
-                    Add Deposit
-                </button>
+                {isManager && (
+                    <button className="btn btn-primary" onClick={() => { setEditingDeposit(null); setIsModalOpen(true); }}>
+                        <Plus size={18} />
+                        Add Deposit
+                    </button>
+                )}
             </div>
 
             <AddDepositModal
@@ -141,22 +146,24 @@ const Deposits = () => {
                                     <td>{d.user?.name || d.userId}</td>
                                     <td>{d.amount.toFixed(2)}</td>
                                     <td>
-                                        <div className="flex items-center gap-3">
-                                            <button
-                                                onClick={() => handleEditDeposit(d)}
-                                                className="text-slate-400 hover:text-primary-color transition-colors"
-                                                title="Edit"
-                                            >
-                                                <Edit size={18} />
-                                            </button>
-                                            <button
-                                                onClick={() => setDepositToDelete(d.id)}
-                                                className="text-slate-400 hover:text-red-500 transition-colors"
-                                                title="Delete"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
+                                        {isManager && (
+                                            <div className="flex items-center gap-3">
+                                                <button
+                                                    onClick={() => handleEditDeposit(d)}
+                                                    className="text-slate-400 hover:text-primary-color transition-colors"
+                                                    title="Edit"
+                                                >
+                                                    <Edit size={18} />
+                                                </button>
+                                                <button
+                                                    onClick={() => setDepositToDelete(d.id)}
+                                                    className="text-slate-400 hover:text-red-500 transition-colors"
+                                                    title="Delete"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
+                                        )}
                                     </td>
                                 </tr>
                             ))}

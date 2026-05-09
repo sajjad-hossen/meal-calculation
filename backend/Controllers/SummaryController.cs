@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Backend.Data;
 using Backend.Dtos;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SummaryController : ControllerBase
     {
         private readonly MessContext _context;

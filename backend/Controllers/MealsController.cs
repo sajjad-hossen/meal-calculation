@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Backend.Data;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MealsController : ControllerBase
     {
         private readonly MessContext _context;
@@ -38,6 +40,7 @@ namespace Backend.Controllers
             return await query.Include(m => m.User).OrderBy(m => m.Date).ToListAsync();
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult<MealEntry>> PostMeal(MealEntry meal)
         {
@@ -57,6 +60,7 @@ namespace Backend.Controllers
             return CreatedAtAction(nameof(GetMeals), new { id = meal.Id }, meal);
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMeal(int id, MealEntry meal)
         {
@@ -70,6 +74,7 @@ namespace Backend.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMeal(int id)
         {
@@ -84,6 +89,7 @@ namespace Backend.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAllMeals()
         {

@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { fetchJson } from '../services/api';
 import { Plus, Check, Trash2 } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
+import { useAuth } from '../components/AuthContext';
 
 interface User {
     id: number;
@@ -24,6 +25,8 @@ interface MealRow {
 }
 
 const Meals = () => {
+    const { user: authUser } = useAuth();
+    const isManager = authUser?.role === 'Manager';
     const [members, setMembers] = useState<User[]>([]);
     const [mealRows, setMealRows] = useState<MealRow[]>([]);
     const [loading, setLoading] = useState(true);
@@ -174,34 +177,36 @@ const Meals = () => {
         <div>
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Daily Meals</h1>
-                <div className="flex items-center gap-3">
-                    <input
-                        type="date"
-                        value={newDate}
-                        onChange={(e) => setNewDate(e.target.value)}
-                        style={{
-                            padding: '0.5rem 0.75rem',
-                            borderRadius: '0.5rem',
-                            border: '1px solid var(--border-color)',
-                            background: 'var(--card-bg)',
-                            color: 'var(--text-primary)',
-                            fontSize: '0.875rem',
-                        }}
-                    />
-                    <button className="btn btn-primary" onClick={handleAddRow}>
-                        <Plus size={18} />
-                        Add Date
-                    </button>
-                    <button
-                        className="btn btn-secondary"
-                        onClick={() => setShowClearConfirm(true)}
-                        style={{ color: '#ef4444', borderColor: '#ef4444' }}
-                        disabled={mealRows.length === 0}
-                    >
-                        <Trash2 size={18} />
-                        Clear All
-                    </button>
-                </div>
+                {isManager && (
+                    <div className="flex items-center gap-3">
+                        <input
+                            type="date"
+                            value={newDate}
+                            onChange={(e) => setNewDate(e.target.value)}
+                            style={{
+                                padding: '0.5rem 0.75rem',
+                                borderRadius: '0.5rem',
+                                border: '1px solid var(--border-color)',
+                                background: 'var(--card-bg)',
+                                color: 'var(--text-primary)',
+                                fontSize: '0.875rem',
+                            }}
+                        />
+                        <button className="btn btn-primary" onClick={handleAddRow}>
+                            <Plus size={18} />
+                            Add Date
+                        </button>
+                        <button
+                            className="btn btn-secondary"
+                            onClick={() => setShowClearConfirm(true)}
+                            style={{ color: '#ef4444', borderColor: '#ef4444' }}
+                            disabled={mealRows.length === 0}
+                        >
+                            <Trash2 size={18} />
+                            Clear All
+                        </button>
+                    </div>
+                )}
             </div>
 
             <ConfirmModal
@@ -277,7 +282,7 @@ const Meals = () => {
                                                             onChange={(e) =>
                                                                 handleMealChange(row.date, member.id, Number(e.target.value))
                                                             }
-                                                            disabled={isSaving}
+                                                            disabled={!isManager || isSaving}
                                                             style={(() => {
                                                                 // Color coding by meal count
                                                                  const colorMap: Record<number, { bg: string; border: string; color: string }> = {

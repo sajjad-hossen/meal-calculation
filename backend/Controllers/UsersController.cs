@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Backend.Data;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly MessContext _context;
@@ -24,6 +26,7 @@ namespace Backend.Controllers
             return await _context.Users.Where(u => u.Status != "Deleted").ToListAsync();
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
@@ -32,6 +35,7 @@ namespace Backend.Controllers
             return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
@@ -45,6 +49,7 @@ namespace Backend.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
