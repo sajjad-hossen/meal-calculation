@@ -83,5 +83,13 @@ namespace Backend.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAllMeals()
+        {
+            _context.Meals.RemoveRange(_context.Meals);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }

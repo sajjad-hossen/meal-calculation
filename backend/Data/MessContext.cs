@@ -11,7 +11,6 @@ namespace Backend.Data
         public DbSet<Deposit> Deposits { get; set; }
         public DbSet<MealEntry> Meals { get; set; }
         public DbSet<BazarCost> BazarCosts { get; set; }
-        public DbSet<ExtraCost> ExtraCosts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,7 +23,6 @@ namespace Backend.Data
             // Decimal precision
             modelBuilder.Entity<Deposit>().Property(p => p.Amount).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<BazarCost>().Property(p => p.Amount).HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<ExtraCost>().Property(p => p.Amount).HasColumnType("decimal(18,2)");
         }
     }
 }

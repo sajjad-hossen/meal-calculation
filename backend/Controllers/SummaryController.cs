@@ -26,18 +26,16 @@ namespace Backend.Controllers
             var deposits = await _context.Deposits.ToListAsync();
             var meals = await _context.Meals.ToListAsync();
             var bazarCosts = await _context.BazarCosts.ToListAsync();
-            var extraCosts = await _context.ExtraCosts.ToListAsync();
 
             var totalDeposit = deposits.Sum(d => d.Amount);
             var totalMeal = meals.Sum(m => m.MealCount);
             var totalBazarCost = bazarCosts.Sum(b => b.Amount);
-            var totalExtraCost = extraCosts.Sum(e => e.Amount);
-            var totalCost = totalBazarCost + totalExtraCost;
+            var totalCost = totalBazarCost;
 
             decimal mealRate = 0;
             if (totalMeal > 0)
             {
-                // Meal Rate = (Total Bazar Cost + Extra Cost) / Total Meal
+                // Meal Rate = Total Bazar Cost / Total Meal
                 mealRate = totalCost / (decimal)totalMeal;
             }
 

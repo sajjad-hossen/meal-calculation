@@ -31,7 +31,7 @@ const Dropdown = ({ items }: DropdownProps) => {
     }, [isOpen]);
 
     return (
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative inline-block" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
@@ -45,16 +45,16 @@ const Dropdown = ({ items }: DropdownProps) => {
                     className="dropdown-menu"
                     style={{
                         position: 'absolute',
-                        top: '100%',
-                        right: 0,
-                        marginTop: '0.25rem',
+                        top: '0',
+                        right: '100%', // Open to the left of the button
+                        marginRight: '8px',
                         backgroundColor: 'var(--card-bg)',
                         border: '1px solid var(--border-color)',
                         borderRadius: 'var(--radius-md)',
                         boxShadow: 'var(--shadow-lg)',
-                        minWidth: '160px',
-                        zIndex: 50,
-                        overflow: 'hidden'
+                        minWidth: '130px',
+                        zIndex: 9999, // Ensure it sits on top of everything
+                        padding: '0.25rem 0'
                     }}
                 >
                     {items.map((item, index) => (
@@ -70,7 +70,7 @@ const Dropdown = ({ items }: DropdownProps) => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '0.75rem',
-                                padding: '0.625rem 1rem',
+                                padding: '0.5rem 1rem',
                                 fontSize: '0.875rem',
                                 border: 'none',
                                 backgroundColor: 'transparent',
@@ -87,7 +87,7 @@ const Dropdown = ({ items }: DropdownProps) => {
                             }}
                         >
                             {item.icon && <item.icon size={16} />}
-                            <span>{item.label}</span>
+                            <span style={{ fontWeight: 500 }}>{item.label}</span>
                         </button>
                     ))}
                 </div>

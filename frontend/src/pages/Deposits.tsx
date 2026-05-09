@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react';
 import { fetchJson } from '../services/api';
 import { Plus, Edit, Trash2 } from 'lucide-react';
-import Dropdown from '../components/Dropdown';
 import AddDepositModal from '../components/AddDepositModal';
+import ConfirmModal from '../components/ConfirmModal';
 
 interface Deposit {
     id: number;
@@ -19,6 +19,8 @@ const Deposits = () => {
     const [deposits, setDeposits] = useState<Deposit[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [depositToDelete, setDepositToDelete] = useState<number | null>(null);
+    const [editingDeposit, setEditingDeposit] = useState<{ id: number; userId: number; date: string; amount: number } | null>(null);
 
     const fetchDeposits = () => {
         fetchJson<Deposit[]>('/Deposits')
@@ -50,23 +52,52 @@ const Deposits = () => {
     };
 
     const handleDeleteDeposit = async (id: number) => {
-        if (!confirm('Are you sure you want to delete this deposit?')) return;
         try {
             await fetchJson(`/Deposits/${id}`, {
                 method: 'DELETE',
             });
             fetchDeposits();
+            setDepositToDelete(null);
         } catch (error) {
             console.error(error);
-            alert('Error deleting deposit');
         }
+    };
+
+    const handleEditDeposit = (deposit: Deposit) => {
+        setEditingDeposit({
+            id: deposit.id,
+            userId: deposit.userId,
+            date: deposit.date.split('T')[0],
+            amount: deposit.amount,
+        });
+        setIsModalOpen(true);
+    };
+
+    const handleEditSubmit = async (id: number, data: { id: number; userId: number; date: string; amount: number }) => {
+        try {
+            await fetchJson(`/Deposits/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(data),
+            });
+            fetchDeposits();
+            setEditingDeposit(null);
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error('Error editing deposit:', error);
+            alert('Error editing deposit');
+        }
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+        setEditingDeposit(null);
     };
 
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Deposits</h1>
-                <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
+                <button className="btn btn-primary" onClick={() => { setEditingDeposit(null); setIsModalOpen(true); }}>
                     <Plus size={18} />
                     Add Deposit
                 </button>
@@ -74,8 +105,21 @@ const Deposits = () => {
 
             <AddDepositModal
                 isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                onClose={handleModalClose}
                 onAdd={handleAddDeposit}
+                editingDeposit={editingDeposit}
+                onEdit={handleEditSubmit}
+            />
+
+            <ConfirmModal
+                isOpen={depositToDelete !== null}
+                onClose={() => setDepositToDelete(null)}
+                onConfirm={() => {
+                    if (depositToDelete) handleDeleteDeposit(depositToDelete);
+                }}
+                title="Delete Deposit"
+                message="Are you sure you want to delete this deposit?"
+                confirmText="Delete"
             />
 
             <div className="card">
@@ -97,21 +141,22 @@ const Deposits = () => {
                                     <td>{d.user?.name || d.userId}</td>
                                     <td>{d.amount.toFixed(2)}</td>
                                     <td>
-                                        <Dropdown
-                                            items={[
-                                                {
-                                                    label: 'Edit',
-                                                    icon: Edit,
-                                                    onClick: () => alert('Edit feature coming soon!')
-                                                },
-                                                {
-                                                    label: 'Delete',
-                                                    icon: Trash2,
-                                                    onClick: () => handleDeleteDeposit(d.id),
-                                                    className: 'text-red-500'
-                                                }
-                                            ]}
-                                        />
+                                        <div className="flex items-center gap-3">
+                                            <button
+                                                onClick={() => handleEditDeposit(d)}
+                                                className="text-slate-400 hover:text-primary-color transition-colors"
+                                                title="Edit"
+                                            >
+                                                <Edit size={18} />
+                                            </button>
+                                            <button
+                                                onClick={() => setDepositToDelete(d.id)}
+                                                className="text-slate-400 hover:text-red-500 transition-colors"
+                                                title="Delete"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

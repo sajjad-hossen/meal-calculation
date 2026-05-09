@@ -7,17 +7,27 @@ interface User {
     name: string;
 }
 
+interface EditingDeposit {
+    id: number;
+    userId: number;
+    date: string;
+    amount: number;
+}
+
 interface AddDepositModalProps {
     isOpen: boolean;
     onClose: () => void;
     onAdd: (data: { userId: number; date: string; amount: number }) => void;
+    editingDeposit?: EditingDeposit | null;
+    onEdit?: (id: number, data: { id: number; userId: number; date: string; amount: number }) => void;
 }
 
-const AddDepositModal = ({ isOpen, onClose, onAdd }: AddDepositModalProps) => {
+const AddDepositModal = ({ isOpen, onClose, onAdd, editingDeposit, onEdit }: AddDepositModalProps) => {
     const [userId, setUserId] = useState<number>(0);
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [amount, setAmount] = useState<number>(0);
     const [users, setUsers] = useState<User[]>([]);
+    const isEditMode = !!editingDeposit;
 
     useEffect(() => {
         if (isOpen) {
@@ -25,10 +35,26 @@ const AddDepositModal = ({ isOpen, onClose, onAdd }: AddDepositModalProps) => {
         }
     }, [isOpen]);
 
+    useEffect(() => {
+        if (editingDeposit) {
+            setUserId(editingDeposit.userId);
+            setDate(editingDeposit.date);
+            setAmount(editingDeposit.amount);
+        } else {
+            setUserId(0);
+            setDate(new Date().toISOString().split('T')[0]);
+            setAmount(0);
+        }
+    }, [editingDeposit, isOpen]);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (userId && amount > 0) {
-            onAdd({ userId, date, amount });
+            if (isEditMode && onEdit && editingDeposit) {
+                onEdit(editingDeposit.id, { id: editingDeposit.id, userId, date, amount });
+            } else {
+                onAdd({ userId, date, amount });
+            }
             onClose();
         } else {
             alert('Please select a member and enter a valid amount');
@@ -41,7 +67,7 @@ const AddDepositModal = ({ isOpen, onClose, onAdd }: AddDepositModalProps) => {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h2 className="modal-title">Add Deposit</h2>
+                    <h2 className="modal-title">{isEditMode ? 'Edit Deposit' : 'Add Deposit'}</h2>
                     <button className="modal-close" onClick={onClose}>
                         <X size={20} />
                     </button>
@@ -78,6 +104,7 @@ const AddDepositModal = ({ isOpen, onClose, onAdd }: AddDepositModalProps) => {
                             type="number"
                             value={amount}
                             onChange={(e) => setAmount(Number(e.target.value))}
+                            autoFocus={isEditMode}
                             required
                         />
                     </div>
@@ -87,7 +114,7 @@ const AddDepositModal = ({ isOpen, onClose, onAdd }: AddDepositModalProps) => {
                             Cancel
                         </button>
                         <button type="submit" className="btn btn-primary">
-                            Save Deposit
+                            {isEditMode ? 'Save Changes' : 'Save Deposit'}
                         </button>
                     </div>
                 </form>

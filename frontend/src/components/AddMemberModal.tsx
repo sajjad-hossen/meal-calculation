@@ -1,19 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
 interface AddMemberModalProps {
     isOpen: boolean;
     onClose: () => void;
     onAdd: (name: string) => void;
+    editingMember?: { id: number; name: string } | null;
+    onEdit?: (id: number, name: string) => void;
 }
 
-const AddMemberModal = ({ isOpen, onClose, onAdd }: AddMemberModalProps) => {
+const AddMemberModal = ({ isOpen, onClose, onAdd, editingMember, onEdit }: AddMemberModalProps) => {
     const [name, setName] = useState('');
+    const isEditMode = !!editingMember;
+
+    useEffect(() => {
+        if (editingMember) {
+            setName(editingMember.name);
+        } else {
+            setName('');
+        }
+    }, [editingMember, isOpen]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (name.trim()) {
-            onAdd(name.trim());
+            if (isEditMode && onEdit && editingMember) {
+                onEdit(editingMember.id, name.trim());
+            } else {
+                onAdd(name.trim());
+            }
             setName('');
             onClose();
         }
@@ -25,7 +40,7 @@ const AddMemberModal = ({ isOpen, onClose, onAdd }: AddMemberModalProps) => {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h2 className="modal-title">Add New Member</h2>
+                    <h2 className="modal-title">{isEditMode ? 'Edit Member' : 'Add New Member'}</h2>
                     <button className="modal-close" onClick={onClose}>
                         <X size={20} />
                     </button>
@@ -52,7 +67,7 @@ const AddMemberModal = ({ isOpen, onClose, onAdd }: AddMemberModalProps) => {
                             Cancel
                         </button>
                         <button type="submit" className="btn btn-primary">
-                            Add Member
+                            {isEditMode ? 'Save Changes' : 'Add Member'}
                         </button>
                     </div>
                 </form>
