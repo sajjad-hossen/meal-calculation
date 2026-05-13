@@ -11,6 +11,9 @@ namespace Backend.Models
         [ForeignKey("UserId")]
         public User? User { get; set; }
         
+        public int MessId { get; set; }
+        public Mess? Mess { get; set; }
+        
         public DateTime Date { get; set; }
         
         // Meal count can be fractional or integer, typically 0.5, 1, etc. but user asked for 0,1,2,3,4

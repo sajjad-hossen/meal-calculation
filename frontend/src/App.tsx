@@ -19,6 +19,7 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
             
             {/* Protected Routes for all authenticated users */}
@@ -27,9 +28,6 @@ function App() {
             <Route path="/meals" element={<ProtectedRoute><Meals /></ProtectedRoute>} />
             <Route path="/deposits" element={<ProtectedRoute><Deposits /></ProtectedRoute>} />
             <Route path="/costs" element={<ProtectedRoute><Costs /></ProtectedRoute>} />
-            
-            {/* Manager only routes */}
-            <Route path="/register" element={<ProtectedRoute roles={['Manager']}><Register /></ProtectedRoute>} />
           </Routes>
         </Layout>
       </Router>

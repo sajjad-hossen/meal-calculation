@@ -19,6 +19,9 @@ namespace Backend.Models
         public DateTime? RefreshTokenExpiryTime { get; set; }
 
         public string Status { get; set; } = "Active"; // Active, Left
+        public bool IsCalculationMember { get; set; } = false;
+        public int MessId { get; set; }
+        public Mess? Mess { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -26,31 +26,41 @@ namespace Backend.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto request)
         {
-            if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+            if (await _context.Users.IgnoreQueryFilters().AnyAsync(u => u.Email == request.Email))
             {
                 return BadRequest("Email already exists.");
             }
+
+            // Create new Mess
+            var mess = new Mess
+            {
+                Name = request.MessName
+            };
+            _context.Messes.Add(mess);
+            await _context.SaveChangesAsync();
 
             var user = new User
             {
                 Name = request.Name,
                 Email = request.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                Role = request.Role == "Manager" ? "Manager" : "Member",
+                Role = "Manager", // The person who creates the mess is the manager
                 Status = "Active",
+                MessId = mess.Id,
+                IsCalculationMember = false, // Manager can add themselves as member later if needed
                 CreatedAt = DateTime.UtcNow
             };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "User registered successfully" });
+            return Ok(new { message = "User and Mess registered successfully", messCode = mess.UniqueCode });
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponseDto>> Login(LoginDto request)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == request.Email && u.Status != "Deleted");
+            var user = await _context.Users.IgnoreQueryFilters().SingleOrDefaultAsync(u => u.Email == request.Email && u.Status != "Deleted");
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
                 return Unauthorized("Invalid credentials.");
@@ -72,7 +82,8 @@ namespace Backend.Controllers
                     Id = user.Id,
                     Name = user.Name,
                     Email = user.Email,
-                    Role = user.Role
+                    Role = user.Role,
+                    MessId = user.MessId
                 }
             });
         }
@@ -80,7 +91,7 @@ namespace Backend.Controllers
         [HttpPost("refresh")]
         public async Task<ActionResult<AuthResponseDto>> Refresh(TokenDto tokenDto)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.RefreshToken == tokenDto.RefreshToken);
+            var user = await _context.Users.IgnoreQueryFilters().SingleOrDefaultAsync(u => u.RefreshToken == tokenDto.RefreshToken);
 
             if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
             {
@@ -103,7 +114,8 @@ namespace Backend.Controllers
                     Id = user.Id,
                     Name = user.Name,
                     Email = user.Email,
-                    Role = user.Role
+                    Role = user.Role,
+                    MessId = user.MessId
                 }
             });
         }

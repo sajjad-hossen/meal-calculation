@@ -16,3 +16,12 @@ export interface SummaryDto {
     mealRate: number;
     userSummaries: UserSummaryDto[];
 }
+
+export interface UserAccount {
+    id: number;
+    name: string;
+    email: string | null;
+    role: string;
+    status: string;
+    isCalculationMember: boolean;
+}

@@ -11,6 +11,9 @@ namespace Backend.Models
         [ForeignKey("UserId")]
         public User? User { get; set; }
         
+        public int MessId { get; set; }
+        public Mess? Mess { get; set; }
+        
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
         public DateTime Date { get; set; } = DateTime.UtcNow;

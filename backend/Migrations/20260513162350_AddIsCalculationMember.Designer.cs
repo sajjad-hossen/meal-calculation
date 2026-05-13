@@ -3,6 +3,7 @@ using System;
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Migrations
 {
     [DbContext(typeof(MessContext))]
-    partial class MessContextModelSnapshot : ModelSnapshot
+    [Migration("20260513162350_AddIsCalculationMember")]
+    partial class AddIsCalculationMember
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,14 +46,9 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("MessId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BuyerUserId");
-
-                    b.HasIndex("MessId");
 
                     b.ToTable("BazarCosts");
                 });
@@ -69,9 +67,6 @@ namespace Backend.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("MessId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Note")
                         .HasColumnType("text");
 
@@ -79,8 +74,6 @@ namespace Backend.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MessId");
 
                     b.HasIndex("UserId");
 
@@ -101,43 +94,14 @@ namespace Backend.Migrations
                     b.Property<double>("MealCount")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("MessId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MessId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Meals");
-                });
-
-            modelBuilder.Entity("Backend.Models.Mess", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UniqueCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Messes");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
@@ -156,9 +120,6 @@ namespace Backend.Migrations
 
                     b.Property<bool>("IsCalculationMember")
                         .HasColumnType("boolean");
-
-                    b.Property<int>("MessId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -186,8 +147,6 @@ namespace Backend.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("MessId");
-
                     b.ToTable("Users");
                 });
 
@@ -199,69 +158,29 @@ namespace Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Models.Mess", "Mess")
-                        .WithMany()
-                        .HasForeignKey("MessId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Buyer");
-
-                    b.Navigation("Mess");
                 });
 
             modelBuilder.Entity("Backend.Models.Deposit", b =>
                 {
-                    b.HasOne("Backend.Models.Mess", "Mess")
-                        .WithMany()
-                        .HasForeignKey("MessId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Mess");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("Backend.Models.MealEntry", b =>
                 {
-                    b.HasOne("Backend.Models.Mess", "Mess")
-                        .WithMany()
-                        .HasForeignKey("MessId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Backend.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Mess");
-
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Backend.Models.User", b =>
-                {
-                    b.HasOne("Backend.Models.Mess", "Mess")
-                        .WithMany("Users")
-                        .HasForeignKey("MessId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Mess");
-                });
-
-            modelBuilder.Entity("Backend.Models.Mess", b =>
-                {
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

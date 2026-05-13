@@ -1,29 +1,27 @@
 
 import { useEffect, useState } from 'react';
 import { fetchJson } from '../services/api';
-import type { UserSummaryDto } from '../types';
-import { UserPlus, Edit, Trash2 } from 'lucide-react';
+import type { UserAccount } from '../types';
+import { UserPlus, Edit, Trash2, Shield, UserCheck, UserX } from 'lucide-react';
 import AddMemberModal from '../components/AddMemberModal';
 import ConfirmModal from '../components/ConfirmModal';
 import { useAuth } from '../components/AuthContext';
 
-interface Member extends UserSummaryDto {
-    // extending summary for now, but real member model might differ
-    id: number;
-    status?: string;
-}
-
 const Members = () => {
     const { user: authUser } = useAuth();
     const isManager = authUser?.role === 'Manager';
-    const [members, setMembers] = useState<Member[]>([]);
+    const [members, setMembers] = useState<UserAccount[]>([]);
+    const [accounts, setAccounts] = useState<UserAccount[]>([]);
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState<'members' | 'accounts'>('members');
+    
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [memberToDelete, setMemberToDelete] = useState<number | null>(null);
     const [editingMember, setEditingMember] = useState<{ id: number; name: string } | null>(null);
 
     const fetchMembers = () => {
-        fetchJson<Member[]>('/Users')
+        setLoading(true);
+        fetchJson<UserAccount[]>('/Users')
             .then(data => {
                 setMembers(data);
                 setLoading(false);
@@ -34,9 +32,26 @@ const Members = () => {
             });
     };
 
+    const fetchAccounts = () => {
+        setLoading(true);
+        fetchJson<UserAccount[]>('/Users/accounts')
+            .then(data => {
+                setAccounts(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error(err);
+                setLoading(false);
+            });
+    };
+
     useEffect(() => {
-        fetchMembers();
-    }, []);
+        if (activeTab === 'members') {
+            fetchMembers();
+        } else {
+            fetchAccounts();
+        }
+    }, [activeTab]);
 
     const handleAddMember = async (name: string) => {
         try {
@@ -44,7 +59,7 @@ const Members = () => {
                 method: 'POST',
                 body: JSON.stringify({ name }),
             });
-            fetchMembers(); // Refresh the list
+            fetchMembers();
             setIsModalOpen(false);
         } catch (error) {
             console.error('Error adding member:', error);
@@ -57,25 +72,24 @@ const Members = () => {
             await fetchJson(`/Users/${id}`, {
                 method: 'DELETE',
             });
-            fetchMembers();
+            if (activeTab === 'members') fetchMembers(); else fetchAccounts();
             setMemberToDelete(null);
         } catch (error) {
             console.error('Error deleting member:', error);
         }
     };
 
-    const handleEditMember = (member: Member) => {
-        setEditingMember({ id: member.id, name: member.name });
-        setIsModalOpen(true);
-    };
-
     const handleEditSubmit = async (id: number, name: string) => {
         try {
+            // Fetch the full object first or just send what we have
+            const target = (activeTab === 'members' ? members : accounts).find(a => a.id === id);
+            if (!target) return;
+
             await fetchJson(`/Users/${id}`, {
                 method: 'PUT',
-                body: JSON.stringify({ id, name }),
+                body: JSON.stringify({ ...target, name }),
             });
-            fetchMembers();
+            if (activeTab === 'members') fetchMembers(); else fetchAccounts();
             setEditingMember(null);
             setIsModalOpen(false);
         } catch (error) {
@@ -84,16 +98,23 @@ const Members = () => {
         }
     };
 
-    const handleModalClose = () => {
-        setIsModalOpen(false);
-        setEditingMember(null);
+    const toggleMembership = async (user: UserAccount) => {
+        try {
+            await fetchJson(`/Users/${user.id}`, {
+                method: 'PUT',
+                body: JSON.stringify({ ...user, isCalculationMember: !user.isCalculationMember }),
+            });
+            fetchAccounts();
+        } catch (error) {
+            console.error('Error toggling membership:', error);
+        }
     };
 
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Members</h1>
-                {isManager && (
+                <h1 className="text-2xl font-bold">People Management</h1>
+                {isManager && activeTab === 'members' && (
                     <button className="btn btn-primary" onClick={() => { setEditingMember(null); setIsModalOpen(true); }}>
                         <UserPlus size={18} />
                         Add Member
@@ -101,9 +122,28 @@ const Members = () => {
                 )}
             </div>
 
+            {isManager && (
+                <div className="flex gap-4 mb-6 border-b border-slate-200 dark:border-slate-700">
+                    <button 
+                        className={`pb-2 px-1 transition-colors relative ${activeTab === 'members' ? 'text-primary-color font-semibold' : 'text-slate-500 hover:text-slate-700'}`}
+                        onClick={() => setActiveTab('members')}
+                    >
+                        Calculation Members
+                        {activeTab === 'members' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary-color"></div>}
+                    </button>
+                    <button 
+                        className={`pb-2 px-1 transition-colors relative ${activeTab === 'accounts' ? 'text-primary-color font-semibold' : 'text-slate-500 hover:text-slate-700'}`}
+                        onClick={() => setActiveTab('accounts')}
+                    >
+                        Access Accounts
+                        {activeTab === 'accounts' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary-color"></div>}
+                    </button>
+                </div>
+            )}
+
             <AddMemberModal
                 isOpen={isModalOpen}
-                onClose={handleModalClose}
+                onClose={() => { setIsModalOpen(false); setEditingMember(null); }}
                 onAdd={handleAddMember}
                 editingMember={editingMember}
                 onEdit={handleEditSubmit}
@@ -112,59 +152,85 @@ const Members = () => {
             <ConfirmModal
                 isOpen={memberToDelete !== null}
                 onClose={() => setMemberToDelete(null)}
-                onConfirm={() => {
-                    if (memberToDelete) handleDeleteMember(memberToDelete);
-                }}
-                title="Delete Member"
-                message="Are you sure you want to delete this member? They will be removed from the list, but their past data will remain for historical calculation."
+                onConfirm={() => memberToDelete && handleDeleteMember(memberToDelete)}
+                title="Delete Person"
+                message="Are you sure? This will remove them from the system."
                 confirmText="Delete"
             />
 
             <div className="card">
                 {loading ? (
-                    <div className="text-center p-4">Loading members...</div>
+                    <div className="text-center p-8 text-slate-500">Loading...</div>
                 ) : (
                     <table>
                         <thead>
                             <tr>
                                 <th>Name</th>
+                                {activeTab === 'accounts' && <th>Email / Role</th>}
                                 <th>Status</th>
-                                <th>Actions</th>
+                                {isManager && <th>Actions</th>}
                             </tr>
                         </thead>
                         <tbody>
-                            {members.map((member) => (
-                                <tr key={member.id}>
+                            {(activeTab === 'members' ? members : accounts).map((item) => (
+                                <tr key={item.id}>
                                     <td>
-                                        <div className="font-medium">{member.name}</div>
+                                        <div className="font-medium flex items-center gap-2">
+                                            {item.name}
+                                            {item.isCalculationMember && activeTab === 'accounts' && <UserCheck size={14} className="text-emerald-500" title="Is Mess Member" />}
+                                        </div>
                                     </td>
+                                    {activeTab === 'accounts' && (
+                                        <td>
+                                            <div className="text-sm">{item.email || <span className="text-slate-400 italic">No account</span>}</div>
+                                            <div className="text-xs text-slate-500 flex items-center gap-1">
+                                                <Shield size={10} /> {item.role}
+                                            </div>
+                                        </td>
+                                    )}
                                     <td>
-                                        <span className="text-sm px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800">
-                                            Active
+                                        <span className={`text-xs px-2 py-1 rounded-full ${item.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
+                                            {item.status}
                                         </span>
                                     </td>
-                                    <td>
-                                        {isManager && (
+                                    {isManager && (
+                                        <td>
                                             <div className="flex items-center gap-3">
+                                                {activeTab === 'accounts' && (
+                                                    <button 
+                                                        onClick={() => toggleMembership(item)}
+                                                        className={`p-1.5 rounded transition-colors ${item.isCalculationMember ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
+                                                        title={item.isCalculationMember ? "Remove from Mess" : "Add to Mess"}
+                                                    >
+                                                        {item.isCalculationMember ? <UserX size={18} /> : <UserCheck size={18} />}
+                                                    </button>
+                                                )}
                                                 <button
-                                                    onClick={() => handleEditMember(member)}
-                                                    className="text-slate-400 hover:text-primary-color transition-colors"
+                                                    onClick={() => { setEditingMember({ id: item.id, name: item.name }); setIsModalOpen(true); }}
+                                                    className="p-1.5 text-slate-400 hover:text-primary-color transition-colors"
                                                     title="Edit"
                                                 >
                                                     <Edit size={18} />
                                                 </button>
                                                 <button
-                                                    onClick={() => setMemberToDelete(member.id)}
-                                                    className="text-slate-400 hover:text-red-500 transition-colors"
+                                                    onClick={() => setMemberToDelete(item.id)}
+                                                    className="p-1.5 text-slate-400 hover:text-red-500 transition-colors"
                                                     title="Delete"
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>
                                             </div>
-                                        )}
-                                    </td>
+                                        </td>
+                                    )}
                                 </tr>
                             ))}
+                            {(activeTab === 'members' ? members : accounts).length === 0 && (
+                                <tr>
+                                    <td colSpan={5} className="text-center p-8 text-slate-400">
+                                        No {activeTab} found.
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 )}

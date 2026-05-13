@@ -23,13 +23,25 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Users.Where(u => u.Status != "Deleted").ToListAsync();
+            return await _context.Users
+                .Where(u => u.Status != "Deleted" && u.IsCalculationMember)
+                .ToListAsync();
+        }
+
+        [Authorize(Roles = "Manager")]
+        [HttpGet("accounts")]
+        public async Task<ActionResult<IEnumerable<User>>> GetAccounts()
+        {
+            return await _context.Users
+                .Where(u => u.Status != "Deleted")
+                .ToListAsync();
         }
 
         [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            user.IsCalculationMember = true; // Manual addition is always a member
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);

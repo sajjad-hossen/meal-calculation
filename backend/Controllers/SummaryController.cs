@@ -24,7 +24,7 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<SummaryDto>> GetSummary()
         {
-            var users = await _context.Users.Where(u => u.Status == "Active").ToListAsync();
+            var users = await _context.Users.Where(u => u.Status == "Active" && u.IsCalculationMember).ToListAsync();
             var deposits = await _context.Deposits.ToListAsync();
             var meals = await _context.Meals.ToListAsync();
             var bazarCosts = await _context.BazarCosts.ToListAsync();

@@ -13,6 +13,9 @@ namespace Backend.Models
         public DateTime Date { get; set; }
         public string Description { get; set; }
         
+        public int MessId { get; set; }
+        public Mess? Mess { get; set; }
+        
         public int BuyerUserId { get; set; }
         [ForeignKey("BuyerUserId")]
         public User? Buyer { get; set; }

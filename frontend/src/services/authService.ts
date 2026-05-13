@@ -12,6 +12,7 @@ export interface UserDto {
     name: string;
     email: string;
     role: string;
+    messId: number;
 }
 
 class AuthService {
@@ -25,8 +26,9 @@ class AuthService {
         return response.data;
     }
 
-    async register(name: string, email: string, password: string, role: string) {
-        return api.post('/auth/register', { name, email, password, role });
+    async register(name: string, email: string, password: string, messName: string) {
+        const response = await api.post('/auth/register', { name, email, password, messName });
+        return response.data;
     }
 
     async logout() {
