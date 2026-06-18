@@ -2,11 +2,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# সরাসরি কারেন্ট ডিরেক্টরি থেকে csproj কপি করা
-COPY ["Backend.csproj", "./"]
-RUN dotnet restore "Backend.csproj"
+# যেহেতু রুট ডিরেক্টরি ফাঁকা, তাই backend/ ফোল্ডারটি উল্লেখ করে দিতে হবে
+COPY ["backend/Backend.csproj", "backend/"]
+RUN dotnet restore "backend/Backend.csproj"
 
+# বাকি সব কোড কপি করা
 COPY . .
+WORKDIR "/src/backend"
 RUN dotnet publish "Backend.csproj" -c Release -o /app/publish
 
 # Runtime stage
