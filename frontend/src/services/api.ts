@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-export const API_BASE_URL = '/api';
+// Vercel ড্যাশবোর্ড থেকে Render-এর লিংকটি নেবে, আর লোকালহোস্টে থাকলে ডিফল্ট লিংকটি নেবে
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://localhost:7082';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
