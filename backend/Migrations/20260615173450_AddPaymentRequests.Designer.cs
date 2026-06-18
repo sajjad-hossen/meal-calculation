@@ -3,6 +3,7 @@ using System;
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Migrations
 {
     [DbContext(typeof(MessContext))]
-    partial class MessContextModelSnapshot : ModelSnapshot
+    [Migration("20260615173450_AddPaymentRequests")]
+    partial class AddPaymentRequests
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,31 +180,6 @@ namespace Backend.Migrations
                     b.HasIndex("MessId");
 
                     b.ToTable("PaymentRequests");
-                });
-
-            modelBuilder.Entity("Backend.Models.SystemSettings", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BkashNumber")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NagadNumber")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Process")
-                        .HasColumnType("text");
-
-                    b.Property<string>("WhatsappNumber")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SystemSettings");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>

@@ -19,6 +19,8 @@ namespace Backend.Data
         public DbSet<Deposit> Deposits { get; set; }
         public DbSet<MealEntry> Meals { get; set; }
         public DbSet<BazarCost> BazarCosts { get; set; }
+        public DbSet<PaymentRequest> PaymentRequests { get; set; }
+        public DbSet<SystemSettings> SystemSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -8,8 +8,8 @@ import ConfirmModal from '../components/ConfirmModal';
 import { useAuth } from '../components/AuthContext';
 
 const Members = () => {
-    const { user: authUser } = useAuth();
-    const isManager = authUser?.role === 'Manager';
+    const { user: authUser, isPaymentActive } = useAuth();
+    const isManager = authUser?.role === 'Manager' && isPaymentActive;
     const [members, setMembers] = useState<UserAccount[]>([]);
     const [accounts, setAccounts] = useState<UserAccount[]>([]);
     const [loading, setLoading] = useState(true);
@@ -177,7 +177,11 @@ const Members = () => {
                                     <td>
                                         <div className="font-medium flex items-center gap-2">
                                             {item.name}
-                                            {item.isCalculationMember && activeTab === 'accounts' && <UserCheck size={14} className="text-emerald-500" title="Is Mess Member" />}
+                                            {item.isCalculationMember && activeTab === 'accounts' && (
+                                                <span title="Is Mess Member">
+                                                    <UserCheck size={14} className="text-emerald-500" />
+                                                </span>
+                                            )}
                                         </div>
                                     </td>
                                     {activeTab === 'accounts' && (

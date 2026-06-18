@@ -25,8 +25,8 @@ interface MealRow {
 }
 
 const Meals = () => {
-    const { user: authUser } = useAuth();
-    const isManager = authUser?.role === 'Manager';
+    const { user: authUser, isPaymentActive } = useAuth();
+    const isManager = authUser?.role === 'Manager' && isPaymentActive;
     const [members, setMembers] = useState<User[]>([]);
     const [mealRows, setMealRows] = useState<MealRow[]>([]);
     const [loading, setLoading] = useState(true);

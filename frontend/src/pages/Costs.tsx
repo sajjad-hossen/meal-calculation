@@ -17,8 +17,8 @@ interface Cost {
 }
 
 const Costs = () => {
-  const { user: authUser } = useAuth();
-  const isManager = authUser?.role === 'Manager';
+  const { user: authUser, isPaymentActive } = useAuth();
+  const isManager = authUser?.role === 'Manager' && isPaymentActive;
   const [bazarCosts, setBazarCosts] = useState<Cost[]>([]);
   const [loading, setLoading] = useState(true);
   const [isBazarModalOpen, setIsBazarModalOpen] = useState(false);

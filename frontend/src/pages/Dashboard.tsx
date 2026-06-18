@@ -3,13 +3,20 @@ import { useEffect, useState } from 'react';
 import type { SummaryDto } from '../types';
 import { fetchJson } from '../services/api';
 import { TrendingUp, Users, DollarSign, Utensils } from 'lucide-react';
+import { useAuth } from '../components/AuthContext';
+import { Navigate } from 'react-router-dom';
 
 const Dashboard = () => {
+    const { user } = useAuth();
     const [summary, setSummary] = useState<SummaryDto | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        if (user?.role === 'Admin') {
+            setLoading(false);
+            return;
+        }
         fetchJson<SummaryDto>('/Summary')
             .then(data => {
                 setSummary(data);
@@ -19,7 +26,12 @@ const Dashboard = () => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, []);
+    }, [user]);
+
+    // Redirect Admin users immediately — must be before loading/error guards
+    if (user?.role === 'Admin') {
+        return <Navigate to="/admin" replace />;
+    }
 
     if (loading) return <div className="p-8 text-center text-muted">Loading dashboard...</div>;
     if (error) return <div className="p-8 text-center text-red-500">Error: {error}</div>;

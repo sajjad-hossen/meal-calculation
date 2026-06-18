@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Backend.Data;
+using Backend.Filters;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,7 @@ namespace Backend.Controllers
         }
 
         [Authorize(Roles = "Manager")]
+        [TypeFilter(typeof(RequirePaymentAttribute))]
         [HttpPost]
         public async Task<ActionResult<BazarCost>> PostBazarCost(BazarCost bazarCost)
         {
@@ -51,6 +53,7 @@ namespace Backend.Controllers
         }
 
         [Authorize(Roles = "Manager")]
+        [TypeFilter(typeof(RequirePaymentAttribute))]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBazarCost(int id, BazarCost bazarCost)
         {
@@ -81,6 +84,7 @@ namespace Backend.Controllers
         }
 
         [Authorize(Roles = "Manager")]
+        [TypeFilter(typeof(RequirePaymentAttribute))]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBazarCost(int id)
         {

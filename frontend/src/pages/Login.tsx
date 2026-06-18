@@ -18,7 +18,11 @@ const Login = () => {
     try {
       const response = await authService.login(email, password);
       setUser(response.user);
-      navigate(from, { replace: true });
+      if (response.user.role === 'Admin' && from === '/') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     } catch (err: any) {
       setError(err.response?.data || 'Login failed. Please check your credentials.');
     }

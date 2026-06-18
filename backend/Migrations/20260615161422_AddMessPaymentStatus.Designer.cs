@@ -3,6 +3,7 @@ using System;
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Migrations
 {
     [DbContext(typeof(MessContext))]
-    partial class MessContextModelSnapshot : ModelSnapshot
+    [Migration("20260615161422_AddMessPaymentStatus")]
+    partial class AddMessPaymentStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,67 +146,6 @@ namespace Backend.Migrations
                     b.ToTable("Messes");
                 });
 
-            modelBuilder.Entity("Backend.Models.PaymentRequest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("ManagerEmail")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("MessId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("TransactionId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MessId");
-
-                    b.ToTable("PaymentRequests");
-                });
-
-            modelBuilder.Entity("Backend.Models.SystemSettings", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BkashNumber")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NagadNumber")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Process")
-                        .HasColumnType("text");
-
-                    b.Property<string>("WhatsappNumber")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SystemSettings");
-                });
-
             modelBuilder.Entity("Backend.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -310,17 +252,6 @@ namespace Backend.Migrations
                     b.Navigation("Mess");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Backend.Models.PaymentRequest", b =>
-                {
-                    b.HasOne("Backend.Models.Mess", "Mess")
-                        .WithMany()
-                        .HasForeignKey("MessId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Mess");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>

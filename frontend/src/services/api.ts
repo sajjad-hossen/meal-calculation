@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const API_BASE_URL = 'http://localhost:5122/api';
+export const API_BASE_URL = '/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -85,6 +85,10 @@ api.interceptors.response.use(
       } finally {
         isRefreshing = false;
       }
+    }
+
+    if (error.response?.status === 402) {
+      alert("Payment Required: " + (error.response?.data?.message || "Your mess has not paid for the current month. Operations are restricted."));
     }
 
     return Promise.reject(error);

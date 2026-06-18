@@ -8,6 +8,7 @@ import Costs from './pages/Costs';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Unauthorized from './pages/Unauthorized';
+import AdminPanel from './pages/AdminPanel';
 import { AuthProvider } from './components/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import './App.css';
@@ -28,6 +29,9 @@ function App() {
             <Route path="/meals" element={<ProtectedRoute><Meals /></ProtectedRoute>} />
             <Route path="/deposits" element={<ProtectedRoute><Deposits /></ProtectedRoute>} />
             <Route path="/costs" element={<ProtectedRoute><Costs /></ProtectedRoute>} />
+
+            {/* Admin Protected Routes */}
+            <Route path="/admin" element={<ProtectedRoute roles={['Admin']}><AdminPanel /></ProtectedRoute>} />
           </Routes>
         </Layout>
       </Router>

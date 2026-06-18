@@ -17,8 +17,8 @@ interface Deposit {
 }
 
 const Deposits = () => {
-    const { user: authUser } = useAuth();
-    const isManager = authUser?.role === 'Manager';
+    const { user: authUser, isPaymentActive } = useAuth();
+    const isManager = authUser?.role === 'Manager' && isPaymentActive;
     const [deposits, setDeposits] = useState<Deposit[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);

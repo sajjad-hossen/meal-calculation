@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Backend.Data;
+using Backend.Filters;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,7 @@ namespace Backend.Controllers
         }
 
         [Authorize(Roles = "Manager")]
+        [TypeFilter(typeof(RequirePaymentAttribute))]
         [HttpPost]
         public async Task<ActionResult<MealEntry>> PostMeal(MealEntry meal)
         {
@@ -61,6 +63,7 @@ namespace Backend.Controllers
         }
 
         [Authorize(Roles = "Manager")]
+        [TypeFilter(typeof(RequirePaymentAttribute))]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMeal(int id, MealEntry meal)
         {
@@ -75,6 +78,7 @@ namespace Backend.Controllers
         }
 
         [Authorize(Roles = "Manager")]
+        [TypeFilter(typeof(RequirePaymentAttribute))]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMeal(int id)
         {
@@ -90,6 +94,7 @@ namespace Backend.Controllers
         }
 
         [Authorize(Roles = "Manager")]
+        [TypeFilter(typeof(RequirePaymentAttribute))]
         [HttpDelete]
         public async Task<IActionResult> DeleteAllMeals()
         {

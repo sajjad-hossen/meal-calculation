@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Backend.Services;
+using Backend.Models;
+using System;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -65,5 +67,49 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Seed Database
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<MessContext>();
+    try
+    {
+        context.Database.Migrate();
+
+        var adminEmail = "admin@messmgr.com";
+        var adminUser = context.Users.IgnoreQueryFilters().FirstOrDefault(u => u.Email == adminEmail);
+        if (adminUser == null)
+        {
+            var adminMess = context.Messes.FirstOrDefault(m => m.Name == "System Admin Mess");
+            if (adminMess == null)
+            {
+                adminMess = new Mess
+                {
+                    Name = "System Admin Mess"
+                };
+                context.Messes.Add(adminMess);
+                context.SaveChanges();
+            }
+
+            adminUser = new User
+            {
+                Name = "System Admin",
+                Email = adminEmail,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
+                Role = "Admin",
+                Status = "Active",
+                MessId = adminMess.Id,
+                IsCalculationMember = false,
+                CreatedAt = DateTime.UtcNow
+            };
+            context.Users.Add(adminUser);
+            context.SaveChanges();
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"An error occurred seeding the DB: {ex.Message}");
+    }
+}
 
 app.Run();
