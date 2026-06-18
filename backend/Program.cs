@@ -1,4 +1,3 @@
-
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 // builder.Services.AddSwaggerGen();
 
@@ -24,6 +22,16 @@ builder.Services.AddDbContext<MessContext>(options =>
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ITenantService, TenantService>();
+
+// Fail fast with a clear message if the JWT key is missing,
+// instead of a cryptic exception from Encoding.UTF8.GetBytes(null).
+var jwtKey = builder.Configuration["JwtSettings:Key"];
+if (string.IsNullOrEmpty(jwtKey))
+{
+    throw new InvalidOperationException(
+        "JwtSettings:Key is missing. Set it in appsettings.json for local dev, " +
+        "or as the JwtSettings__Key environment variable on Render for production.");
+}
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -36,7 +44,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
             ValidAudience = builder.Configuration["JwtSettings:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
 
@@ -62,10 +70,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 // Seed Database
