@@ -2,6 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
+# সরাসরি কারেন্ট ডিরেক্টরি থেকে csproj কপি করা
 COPY ["Backend.csproj", "./"]
 RUN dotnet restore "Backend.csproj"
 
