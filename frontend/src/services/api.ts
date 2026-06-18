@@ -1,7 +1,15 @@
+// import axios from 'axios';
+
+// // Vercel ড্যাশবোর্ড থেকে Render-এর লিংকটি নেবে, আর লোকালহোস্টে থাকলে ডিফল্ট লিংকটি নেবে
+// export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://localhost:7082';
+
+// const api = axios.create({
+//   baseURL: API_BASE_URL,
+// });
 import axios from 'axios';
 
-// Vercel ড্যাশবোর্ড থেকে Render-এর লিংকটি নেবে, আর লোকালহোস্টে থাকলে ডিফল্ট লিংকটি নেবে
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://localhost:7082';
+// কোনো ভ্যারিয়েবল ছাড়া সরাসরি আপনার লাইভ রেন্ডার ব্যাকএন্ডের ইউআরএল বসিয়ে দিন
+export const API_BASE_URL = 'https://meal-calculation-backend.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
