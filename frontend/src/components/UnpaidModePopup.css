@@ -1,0 +1,335 @@
+/* ============================================================
+   UnpaidModePopup — MessMgr
+   Auto-shown popup for managers in unpaid mode
+   ============================================================ */
+
+/* ── Overlay ────────────────────────────────────────────── */
+.upm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 8500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  transition: background 0.3s ease, backdrop-filter 0.3s ease;
+  pointer-events: none;
+}
+
+.upm-overlay.upm-visible {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  pointer-events: all;
+}
+
+/* ── Card ───────────────────────────────────────────────── */
+.upm-card {
+  background: #ffffff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 4px 6px rgba(0,0,0,0.04),
+    0 24px 64px rgba(239, 68, 68, 0.18),
+    0 0 0 1px rgba(239, 68, 68, 0.08);
+  opacity: 0;
+  transform: translateY(36px) scale(0.95);
+  transition: opacity 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.upm-card.upm-card-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.upm-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1.25rem 1.4rem;
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.upm-icon-ring {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  animation: upmPulseRing 2s ease-in-out infinite;
+}
+
+@keyframes upmPulseRing {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.3); }
+  50%       { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+}
+
+.upm-header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.upm-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.upm-title {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.upm-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* Language toggle */
+.upm-lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.upm-lang-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* X button */
+.upm-x-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.upm-x-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+/* ── Body ───────────────────────────────────────────────── */
+.upm-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.35rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.upm-body::-webkit-scrollbar { width: 3px; }
+.upm-body::-webkit-scrollbar-track { background: #f8fafc; }
+.upm-body::-webkit-scrollbar-thumb { background: #fca5a5; border-radius: 4px; }
+
+/* Warning text */
+.upm-warn-text {
+  font-size: 0.87rem;
+  color: #374151;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  border-left: 3px solid #ef4444;
+}
+
+/* ── Test credentials box ───────────────────────────────── */
+.upm-test-box {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #bae6fd;
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
+
+.upm-test-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0369a1;
+  margin-bottom: 0.4rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.upm-test-body {
+  font-size: 0.8rem;
+  color: #0c4a6e;
+  line-height: 1.55;
+  margin: 0 0 0.75rem 0;
+}
+
+.upm-cred-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.upm-cred-item {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+}
+
+.upm-cred-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #0284c7;
+  margin-bottom: 0.2rem;
+}
+
+.upm-cred-value {
+  display: block;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  word-break: break-all;
+}
+
+/* ── Payment action box ─────────────────────────────────── */
+.upm-action-box {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  border-left: 3px solid #f59e0b;
+}
+
+.upm-action-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #92400e;
+  margin-bottom: 0.4rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.upm-action-body {
+  font-size: 0.8rem;
+  color: #78350f;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.upm-footer {
+  display: flex;
+  gap: 0.65rem;
+  padding: 1rem 1.4rem;
+  border-top: 1px solid #f1f5f9;
+  background: #fafafa;
+  flex-shrink: 0;
+}
+
+.upm-close-btn {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 50px;
+  background: #ffffff;
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.upm-close-btn:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+  color: #374151;
+}
+
+.upm-pay-btn {
+  flex: 2;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+}
+
+.upm-pay-btn:hover {
+  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45);
+  transform: translateY(-1px);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .upm-card {
+    border-radius: 16px;
+  }
+
+  .upm-cred-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .upm-footer {
+    flex-direction: column-reverse;
+  }
+
+  .upm-lang-btn span {
+    display: none;
+  }
+}

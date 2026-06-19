@@ -14,6 +14,17 @@ const Navbar = () => {
     const [showSystemInfoModal, setShowSystemInfoModal] = useState(false);
     const [hasPending, setHasPending] = useState(false);
 
+    // Listen for the custom event fired by UnpaidModePopup's "Go to Payment" button
+    useEffect(() => {
+        const handler = () => {
+            if (user?.role === 'Manager' && !isPaymentActive && !hasPending) {
+                setShowPaymentModal(true);
+            }
+        };
+        window.addEventListener('open-payment-modal', handler);
+        return () => window.removeEventListener('open-payment-modal', handler);
+    }, [user, isPaymentActive, hasPending]);
+
     // Check if manager already has a pending request
     useEffect(() => {
         if (user?.role === 'Manager' && !isPaymentActive) {
