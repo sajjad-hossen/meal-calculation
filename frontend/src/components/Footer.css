@@ -1,0 +1,231 @@
+/* ============================================================
+   Footer — MessMgr
+   ============================================================ */
+
+.footer {
+  position: relative;
+  margin-top: auto;
+  background: linear-gradient(135deg, #0f0a1e 0%, #1a0d3d 50%, #0f172a 100%);
+  color: #e2e8f0;
+  overflow: hidden;
+}
+
+/* Subtle top highlight beam */
+.footer-beam {
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #7C3AED 20%,
+    #a78bfa 50%,
+    #7C3AED 80%,
+    transparent 100%);
+  opacity: 0.8;
+}
+
+/* Ambient glow orbs in the background */
+.footer::before {
+  content: '';
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, transparent 70%);
+  top: -80px;
+  left: -60px;
+  pointer-events: none;
+}
+
+.footer::after {
+  content: '';
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.1) 0%, transparent 70%);
+  bottom: -60px;
+  right: -40px;
+  pointer-events: none;
+}
+
+/* ── Inner layout ───────────────────────────────────────── */
+.footer-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* ── Brand block ────────────────────────────────────────── */
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.footer-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(107, 33, 168, 0.45);
+  flex-shrink: 0;
+}
+
+.footer-app-name {
+  display: block;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.footer-app-sub {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+/* ── Center block ───────────────────────────────────────── */
+.footer-center {
+  text-align: center;
+  flex: 1;
+  min-width: 160px;
+}
+
+.footer-built-by {
+  font-size: 0.92rem;
+  color: #94a3b8;
+  margin: 0 0 0.2rem 0;
+  font-weight: 400;
+}
+
+.footer-heart {
+  color: #f43f5e;
+  display: inline-block;
+  animation: heartbeat 1.6s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.25); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.15); }
+  56%       { transform: scale(1); }
+}
+
+.footer-dev-name {
+  font-weight: 700;
+  color: #a78bfa;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-dev-name:hover {
+  color: #c4b5fd;
+  text-decoration: underline;
+}
+
+.footer-copy {
+  font-size: 0.82rem;
+  color: #475569;
+  margin: 0;
+}
+
+/* ── Contact pills ──────────────────────────────────────── */
+.footer-contacts {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.footer-contact-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: #94a3b8;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.footer-contact-pill:hover {
+  color: #ffffff;
+  border-color: rgba(167, 139, 250, 0.5);
+  background: rgba(124, 58, 237, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+
+/* Accent variants */
+.footer-linkedin:hover {
+  border-color: rgba(10, 102, 194, 0.6);
+  background: rgba(10, 102, 194, 0.15);
+  box-shadow: 0 4px 12px rgba(10, 102, 194, 0.25);
+}
+
+.footer-email:hover {
+  border-color: rgba(236, 72, 153, 0.5);
+  background: rgba(236, 72, 153, 0.12);
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2);
+}
+
+.footer-phone:hover {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.12);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    gap: 1.25rem;
+  }
+
+  .footer-brand {
+    justify-content: center;
+  }
+
+  .footer-contacts {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 500px) {
+  .footer-contact-pill span {
+    display: none;
+  }
+
+  .footer-contact-pill {
+    padding: 0.4rem 0.5rem;
+  }
+}

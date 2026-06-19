@@ -1,111 +1,191 @@
 import React, { useEffect, useState } from 'react';
-import { X, Info, Phone, MessageCircle } from 'lucide-react';
+import { X, Info, Phone, MessageCircle, Globe } from 'lucide-react';
 import { fetchJson } from '../services/api';
 import type { SystemSettingsDto } from '../types';
+import './SystemInfoModal.css';
 
 interface SystemInfoModalProps {
     onClose: () => void;
 }
 
+const content = {
+    en: {
+        title: 'Payment Instructions',
+        subtitle: 'Follow the steps below to activate your mess',
+        step1: 'Step 1 — Send Payment',
+        step1Desc: 'Send the monthly subscription fee to one of the numbers below using bKash, Nagad, or WhatsApp.',
+        step2: 'Step 2 — Submit Request',
+        step2Desc: 'Click the "Request Payment" button in the top navbar and fill in your transaction ID and a short note.',
+        step3: 'Step 3 — Wait for Approval',
+        step3Desc: 'The Admin will verify and approve your request. Your mess will be unlocked automatically.',
+        processLabel: 'Process',
+        bkash: 'bKash Number',
+        nagad: 'Nagad Number',
+        whatsapp: 'WhatsApp',
+        noInfo: 'No payment instructions have been set up by the admin yet.',
+        close: 'Got it, Close',
+        langToggle: 'বাংলায় দেখুন',
+    },
+    bn: {
+        title: 'পেমেন্ট নির্দেশিকা',
+        subtitle: 'আপনার মেস সক্রিয় করতে নিচের ধাপগুলো অনুসরণ করুন',
+        step1: 'ধাপ ১ — পেমেন্ট পাঠান',
+        step1Desc: 'নিচের যেকোনো একটি নম্বরে বিকাশ, নগদ বা হোয়াটসঅ্যাপের মাধ্যমে মাসিক ফি পাঠান।',
+        step2: 'ধাপ ২ — রিকোয়েস্ট পাঠান',
+        step2Desc: 'নেভিগেশন বারে "Request Payment" বাটনে ক্লিক করুন এবং ট্রানজেকশন আইডি ও একটি সংক্ষিপ্ত নোট দিন।',
+        step3: 'ধাপ ৩ — অনুমোদনের অপেক্ষা করুন',
+        step3Desc: 'অ্যাডমিন যাচাই করে অনুমোদন দিলে আপনার মেস স্বয়ংক্রিয়ভাবে আনলক হয়ে যাবে।',
+        processLabel: 'প্রক্রিয়া',
+        bkash: 'বিকাশ নম্বর',
+        nagad: 'নগদ নম্বর',
+        whatsapp: 'হোয়াটসঅ্যাপ',
+        noInfo: 'অ্যাডমিন এখনো কোনো পেমেন্ট নির্দেশনা সেট করেননি।',
+        close: 'বুঝেছি, বন্ধ করুন',
+        langToggle: 'View in English',
+    },
+};
+
 const SystemInfoModal: React.FC<SystemInfoModalProps> = ({ onClose }) => {
     const [settings, setSettings] = useState<SystemSettingsDto | null>(null);
     const [loading, setLoading] = useState(true);
+    const [lang, setLang] = useState<'en' | 'bn'>('en');
+    const t = content[lang];
 
     useEffect(() => {
         fetchJson<SystemSettingsDto>('/Settings')
-            .then(data => {
-                setSettings(data);
-                setLoading(false);
-            })
-            .catch(() => {
-                setLoading(false);
-            });
+            .then(data => { setSettings(data); setLoading(false); })
+            .catch(() => setLoading(false));
     }, []);
 
+    // Close on backdrop click
+    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (e.target === e.currentTarget) onClose();
+    };
+
+    const steps = [
+        { num: '1', title: t.step1, desc: t.step1Desc, color: '#6366f1' },
+        { num: '2', title: t.step2, desc: t.step2Desc, color: '#f59e0b' },
+        { num: '3', title: t.step3, desc: t.step3Desc, color: '#10b981' },
+    ];
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-            <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                    <div className="flex items-center gap-2 text-indigo-600">
-                        <Info size={20} />
-                        <h2 className="text-lg font-bold">Payment Instructions</h2>
+        <div className="sim-overlay" onClick={handleBackdropClick}>
+            <div className="sim-card" role="dialog" aria-modal="true">
+
+                {/* ── Header ── */}
+                <div className="sim-header">
+                    <div className="sim-header-left">
+                        <div className="sim-icon-wrap">
+                            <Info size={20} color="#ffffff" />
+                        </div>
+                        <div>
+                            <h2 className="sim-title">{t.title}</h2>
+                            <p className="sim-subtitle">{t.subtitle}</p>
+                        </div>
                     </div>
-                    <button onClick={onClose} className="p-1 rounded-full hover:bg-gray-200 transition-colors">
-                        <X size={20} />
-                    </button>
+                    <div className="sim-header-actions">
+                        <button
+                            className="sim-lang-toggle"
+                            onClick={() => setLang(l => l === 'en' ? 'bn' : 'en')}
+                            title="Switch language"
+                        >
+                            <Globe size={14} />
+                            {t.langToggle}
+                        </button>
+                        <button className="sim-close-btn" onClick={onClose} aria-label="Close">
+                            <X size={18} />
+                        </button>
+                    </div>
                 </div>
 
-                <div className="p-6">
+                {/* ── Body ── */}
+                <div className="sim-body">
                     {loading ? (
-                        <div className="flex justify-center p-8">
-                            <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="sim-loading">
+                            <div className="sim-spinner" />
+                            <span>Loading...</span>
                         </div>
                     ) : settings ? (
-                        <div className="space-y-6">
-                            {settings.process && (
-                                <div>
-                                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Process</h3>
-                                    <div className="p-4 bg-blue-50 text-blue-800 rounded-lg text-sm leading-relaxed whitespace-pre-wrap">
-                                        {settings.process}
+                        <>
+                            {/* Steps */}
+                            <div className="sim-steps">
+                                {steps.map((step) => (
+                                    <div className="sim-step" key={step.num}>
+                                        <div
+                                            className="sim-step-num"
+                                            style={{ background: step.color }}
+                                        >
+                                            {step.num}
+                                        </div>
+                                        <div className="sim-step-content">
+                                            <div className="sim-step-title">{step.title}</div>
+                                            <div className="sim-step-desc">{step.desc}</div>
+                                        </div>
                                     </div>
+                                ))}
+                            </div>
+
+                            {/* Admin process note */}
+                            {settings.process && (
+                                <div className="sim-process-box">
+                                    <div className="sim-section-label">
+                                        <Info size={13} />
+                                        {t.processLabel}
+                                    </div>
+                                    <p className="sim-process-text">{settings.process}</p>
                                 </div>
                             )}
 
-                            <div className="grid grid-cols-1 gap-4">
+                            {/* Payment numbers */}
+                            <div className="sim-payment-grid">
                                 {settings.bkashNumber && (
-                                    <div className="flex items-center gap-3 p-3 border border-pink-100 bg-pink-50 rounded-lg">
-                                        <div className="p-2 bg-pink-100 text-pink-600 rounded-full">
-                                            <Phone size={18} />
+                                    <div className="sim-payment-card sim-bkash">
+                                        <div className="sim-payment-icon">
+                                            <Phone size={16} />
                                         </div>
                                         <div>
-                                            <div className="text-xs text-pink-600 font-semibold uppercase">bKash Number</div>
-                                            <div className="font-mono text-gray-800 font-bold">{settings.bkashNumber}</div>
+                                            <div className="sim-payment-label">{t.bkash}</div>
+                                            <div className="sim-payment-number">{settings.bkashNumber}</div>
                                         </div>
                                     </div>
                                 )}
-                                
                                 {settings.nagadNumber && (
-                                    <div className="flex items-center gap-3 p-3 border border-orange-100 bg-orange-50 rounded-lg">
-                                        <div className="p-2 bg-orange-100 text-orange-600 rounded-full">
-                                            <Phone size={18} />
+                                    <div className="sim-payment-card sim-nagad">
+                                        <div className="sim-payment-icon">
+                                            <Phone size={16} />
                                         </div>
                                         <div>
-                                            <div className="text-xs text-orange-600 font-semibold uppercase">Nagad Number</div>
-                                            <div className="font-mono text-gray-800 font-bold">{settings.nagadNumber}</div>
+                                            <div className="sim-payment-label">{t.nagad}</div>
+                                            <div className="sim-payment-number">{settings.nagadNumber}</div>
                                         </div>
                                     </div>
                                 )}
-
                                 {settings.whatsappNumber && (
-                                    <div className="flex items-center gap-3 p-3 border border-emerald-100 bg-emerald-50 rounded-lg">
-                                        <div className="p-2 bg-emerald-100 text-emerald-600 rounded-full">
-                                            <MessageCircle size={18} />
+                                    <div className="sim-payment-card sim-whatsapp">
+                                        <div className="sim-payment-icon">
+                                            <MessageCircle size={16} />
                                         </div>
                                         <div>
-                                            <div className="text-xs text-emerald-600 font-semibold uppercase">WhatsApp</div>
-                                            <div className="font-mono text-gray-800 font-bold">{settings.whatsappNumber}</div>
+                                            <div className="sim-payment-label">{t.whatsapp}</div>
+                                            <div className="sim-payment-number">{settings.whatsappNumber}</div>
                                         </div>
                                     </div>
                                 )}
                             </div>
-                            
+
                             {!settings.process && !settings.bkashNumber && !settings.nagadNumber && !settings.whatsappNumber && (
-                                <div className="text-center text-gray-500 py-4">
-                                    No payment instructions have been set up by the admin yet.
-                                </div>
+                                <div className="sim-empty">{t.noInfo}</div>
                             )}
-                        </div>
+                        </>
                     ) : (
-                        <div className="text-center text-red-500 py-4">Failed to load settings.</div>
+                        <div className="sim-error">Failed to load settings. Please try again.</div>
                     )}
                 </div>
-                
-                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
-                    <button
-                        onClick={onClose}
-                        className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
-                    >
-                        Close
+
+                {/* ── Footer ── */}
+                <div className="sim-footer">
+                    <button className="sim-close-main-btn" onClick={onClose}>
+                        {t.close}
                     </button>
                 </div>
             </div>
