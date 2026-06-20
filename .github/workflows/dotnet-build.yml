@@ -1,0 +1,28 @@
+﻿name: .NET Core Build Test
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore Dependencies
+      # এটি backend ফোল্ডারের ভেতরের সলিউশন বা প্রজেক্ট ফাইলটি খুঁজে নিয়ে রিস্টোর করবে
+      run: dotnet restore backend/
+
+    - name: Build Project
+      # এটি নির্দিষ্ট করে শুধু backend ফোল্ডারের ভেতরের কোডটুকু বিল্ড করবে
+      run: dotnet build backend/ --no-restore --configuration Release
