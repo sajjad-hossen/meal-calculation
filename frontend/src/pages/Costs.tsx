@@ -128,45 +128,47 @@ const Costs = () => {
         {loading ? (
           <div className="p-4 text-center">Loading bazar costs...</div>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Buyer</th>
-                <th>Amount</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bazarCosts.map(c => (
-                <tr key={c.id}>
-                  <td>{new Date(c.date).toLocaleDateString()}</td>
-                  <td>{c.buyer?.name || 'N/A'}</td>
-                  <td>{c.amount.toFixed(2)}</td>
-                  <td>
-                    {isManager && (
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => handleEditCost(c)}
-                          className="text-slate-400 hover:text-primary-color transition-colors"
-                          title="Edit"
-                        >
-                          <Edit size={18} />
-                        </button>
-                        <button
-                          onClick={() => setBazarToDelete(c.id)}
-                          className="text-slate-400 hover:text-red-500 transition-colors"
-                          title="Delete"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    )}
-                  </td>
+          <div className="w-full overflow-x-auto">
+            <table className="w-full min-w-[500px]">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Buyer</th>
+                  <th>Amount</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {bazarCosts.map(c => (
+                  <tr key={c.id}>
+                    <td className="whitespace-nowrap">{new Date(c.date).toLocaleDateString()}</td>
+                    <td className="whitespace-nowrap">{c.buyer?.name || 'N/A'}</td>
+                    <td>{c.amount.toFixed(2)}</td>
+                    <td>
+                      {isManager && (
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => handleEditCost(c)}
+                            className="text-slate-400 hover:text-primary-color transition-colors"
+                            title="Edit"
+                          >
+                            <Edit size={18} />
+                          </button>
+                          <button
+                            onClick={() => setBazarToDelete(c.id)}
+                            className="text-slate-400 hover:text-red-500 transition-colors"
+                            title="Delete"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

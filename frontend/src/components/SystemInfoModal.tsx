@@ -62,11 +62,16 @@ const SystemInfoModal: React.FC<SystemInfoModalProps> = ({ onClose }) => {
         if (e.target === e.currentTarget) onClose();
     };
 
-    const steps = [
-        { num: '1', title: t.step1, desc: t.step1Desc, color: '#6366f1' },
-        { num: '2', title: t.step2, desc: t.step2Desc, color: '#f59e0b' },
-        { num: '3', title: t.step3, desc: t.step3Desc, color: '#10b981' },
-    ];
+    const parsedSteps = (() => {
+        if (!settings?.process) return [];
+        try {
+            const parsed = JSON.parse(settings.process);
+            if (Array.isArray(parsed)) return parsed;
+        } catch { }
+        return [{ title: t.processLabel, desc: settings.process }];
+    })();
+
+    const stepColors = ['#6366f1', '#f59e0b', '#10b981', '#ec4899', '#8b5cf6', '#06b6d4'];
 
     return (
         <div className="sim-overlay" onClick={handleBackdropClick}>
@@ -108,31 +113,22 @@ const SystemInfoModal: React.FC<SystemInfoModalProps> = ({ onClose }) => {
                     ) : settings ? (
                         <>
                             {/* Steps */}
-                            <div className="sim-steps">
-                                {steps.map((step) => (
-                                    <div className="sim-step" key={step.num}>
-                                        <div
-                                            className="sim-step-num"
-                                            style={{ background: step.color }}
-                                        >
-                                            {step.num}
+                            {parsedSteps.length > 0 && (
+                                <div className="sim-steps">
+                                    {parsedSteps.map((step, idx) => (
+                                        <div className="sim-step" key={idx}>
+                                            <div
+                                                className="sim-step-num"
+                                                style={{ background: stepColors[idx % stepColors.length] }}
+                                            >
+                                                {idx + 1}
+                                            </div>
+                                            <div className="sim-step-content">
+                                                <div className="sim-step-title">{step.title}</div>
+                                                <div className="sim-step-desc" style={{ whiteSpace: 'pre-wrap' }}>{step.desc}</div>
+                                            </div>
                                         </div>
-                                        <div className="sim-step-content">
-                                            <div className="sim-step-title">{step.title}</div>
-                                            <div className="sim-step-desc">{step.desc}</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Admin process note */}
-                            {settings.process && (
-                                <div className="sim-process-box">
-                                    <div className="sim-section-label">
-                                        <Info size={13} />
-                                        {t.processLabel}
-                                    </div>
-                                    <p className="sim-process-text">{settings.process}</p>
+                                    ))}
                                 </div>
                             )}
 

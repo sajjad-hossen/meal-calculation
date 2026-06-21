@@ -88,7 +88,7 @@ const Navbar = () => {
                         )}
                     </div>
 
-                    <div className="navbar-menu flex flex-wrap items-center justify-center gap-1 sm:gap-4 flex-1 px-2 overflow-x-auto">
+                    <div className="navbar-menu flex items-center justify-center gap-1 sm:gap-4 flex-1 px-2 overflow-x-auto">
                         {navItems.filter(item => item.show).map((item) => (
                             <NavLink
                                 key={item.to}

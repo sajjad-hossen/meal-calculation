@@ -7,6 +7,7 @@
 //   baseURL: API_BASE_URL,
 // });
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 // কোনো ভ্যারিয়েবল ছাড়া সরাসরি আপনার লাইভ রেন্ডার ব্যাকএন্ডের ইউআরএল বসিয়ে দিন
 export const API_BASE_URL = 'https://meal-calculation-backend.onrender.com/api';
@@ -97,7 +98,13 @@ api.interceptors.response.use(
     }
 
     if (error.response?.status === 402) {
-      alert("Payment Required: " + (error.response?.data?.message || "Your mess has not paid for the current month. Operations are restricted."));
+      toast.error("Payment Required: " + (error.response?.data?.message || "Your mess has not paid for the current month. Operations are restricted."));
+    } else if (error.response?.data?.message) {
+      toast.error(error.response.data.message);
+    } else if (error.response?.data && typeof error.response.data === 'string') {
+      toast.error(error.response.data);
+    } else if (error.message && error.response?.status !== 401) {
+      toast.error(error.message);
     }
 
     return Promise.reject(error);

@@ -595,3 +595,43 @@ label {
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+
+/* --- Tailwind Polyfills for Mobile Responsiveness --- */
+.hidden { display: none !important; }
+.flex { display: flex !important; }
+.block { display: block !important; }
+.inline { display: inline !important; }
+.inline-block { display: inline-block !important; }
+
+.w-full { width: 100% !important; }
+.overflow-x-auto { overflow-x: auto !important; }
+.whitespace-nowrap { white-space: nowrap !important; }
+.flex-wrap { flex-wrap: wrap !important; }
+.flex-1 { flex: 1 1 0% !important; }
+.flex-shrink-0 { flex-shrink: 0 !important; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Responsive break points (matches sm: md: lg:) */
+@media (min-width: 640px) {
+  .sm\:flex { display: flex !important; }
+  .sm\:inline { display: inline !important; }
+  .sm\:block { display: block !important; }
+  .sm\:hidden { display: none !important; }
+  .sm\:gap-6 { gap: 1.5rem !important; }
+  .sm\:gap-3 { gap: 0.75rem !important; }
+  .sm\:gap-4 { gap: 1rem !important; }
+}
+
+@media (min-width: 768px) {
+  .md\:inline { display: inline !important; }
+  .md\:flex { display: flex !important; }
+  .md\:block { display: block !important; }
+  .md\:hidden { display: none !important; }
+}
+
+@media (min-width: 1024px) {
+  .lg\:inline { display: inline !important; }
+  .lg\:flex { display: flex !important; }
+  .lg\:block { display: block !important; }
+  .lg\:hidden { display: none !important; }
+}

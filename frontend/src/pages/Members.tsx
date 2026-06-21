@@ -162,81 +162,83 @@ const Members = () => {
                 {loading ? (
                     <div className="text-center p-8 text-slate-500">Loading...</div>
                 ) : (
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                {activeTab === 'accounts' && <th>Email / Role</th>}
-                                <th>Status</th>
-                                {isManager && <th>Actions</th>}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {(activeTab === 'members' ? members : accounts).map((item) => (
-                                <tr key={item.id}>
-                                    <td>
-                                        <div className="font-medium flex items-center gap-2">
-                                            {item.name}
-                                            {item.isCalculationMember && activeTab === 'accounts' && (
-                                                <span title="Is Mess Member">
-                                                    <UserCheck size={14} className="text-emerald-500" />
-                                                </span>
-                                            )}
-                                        </div>
-                                    </td>
-                                    {activeTab === 'accounts' && (
-                                        <td>
-                                            <div className="text-sm">{item.email || <span className="text-slate-400 italic">No account</span>}</div>
-                                            <div className="text-xs text-slate-500 flex items-center gap-1">
-                                                <Shield size={10} /> {item.role}
-                                            </div>
-                                        </td>
-                                    )}
-                                    <td>
-                                        <span className={`text-xs px-2 py-1 rounded-full ${item.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
-                                            {item.status}
-                                        </span>
-                                    </td>
-                                    {isManager && (
-                                        <td>
-                                            <div className="flex items-center gap-3">
-                                                {activeTab === 'accounts' && (
-                                                    <button 
-                                                        onClick={() => toggleMembership(item)}
-                                                        className={`p-1.5 rounded transition-colors ${item.isCalculationMember ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
-                                                        title={item.isCalculationMember ? "Remove from Mess" : "Add to Mess"}
-                                                    >
-                                                        {item.isCalculationMember ? <UserX size={18} /> : <UserCheck size={18} />}
-                                                    </button>
-                                                )}
-                                                <button
-                                                    onClick={() => { setEditingMember({ id: item.id, name: item.name }); setIsModalOpen(true); }}
-                                                    className="p-1.5 text-slate-400 hover:text-primary-color transition-colors"
-                                                    title="Edit"
-                                                >
-                                                    <Edit size={18} />
-                                                </button>
-                                                <button
-                                                    onClick={() => setMemberToDelete(item.id)}
-                                                    className="p-1.5 text-slate-400 hover:text-red-500 transition-colors"
-                                                    title="Delete"
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    )}
-                                </tr>
-                            ))}
-                            {(activeTab === 'members' ? members : accounts).length === 0 && (
+                    <div className="w-full overflow-x-auto">
+                        <table className="w-full min-w-[600px]">
+                            <thead>
                                 <tr>
-                                    <td colSpan={5} className="text-center p-8 text-slate-400">
-                                        No {activeTab} found.
-                                    </td>
+                                    <th>Name</th>
+                                    {activeTab === 'accounts' && <th>Email / Role</th>}
+                                    <th>Status</th>
+                                    {isManager && <th>Actions</th>}
                                 </tr>
-                            )}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {(activeTab === 'members' ? members : accounts).map((item) => (
+                                    <tr key={item.id}>
+                                        <td>
+                                            <div className="font-medium flex items-center gap-2 whitespace-nowrap">
+                                                {item.name}
+                                                {item.isCalculationMember && activeTab === 'accounts' && (
+                                                    <span title="Is Mess Member">
+                                                        <UserCheck size={14} className="text-emerald-500" />
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        {activeTab === 'accounts' && (
+                                            <td>
+                                                <div className="text-sm whitespace-nowrap">{item.email || <span className="text-slate-400 italic">No account</span>}</div>
+                                                <div className="text-xs text-slate-500 flex items-center gap-1 whitespace-nowrap">
+                                                    <Shield size={10} /> {item.role}
+                                                </div>
+                                            </td>
+                                        )}
+                                        <td>
+                                            <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${item.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
+                                                {item.status}
+                                            </span>
+                                        </td>
+                                        {isManager && (
+                                            <td>
+                                                <div className="flex items-center gap-3">
+                                                    {activeTab === 'accounts' && (
+                                                        <button 
+                                                            onClick={() => toggleMembership(item)}
+                                                            className={`p-1.5 rounded transition-colors ${item.isCalculationMember ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
+                                                            title={item.isCalculationMember ? "Remove from Mess" : "Add to Mess"}
+                                                        >
+                                                            {item.isCalculationMember ? <UserX size={18} /> : <UserCheck size={18} />}
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        onClick={() => { setEditingMember({ id: item.id, name: item.name }); setIsModalOpen(true); }}
+                                                        className="p-1.5 text-slate-400 hover:text-primary-color transition-colors"
+                                                        title="Edit"
+                                                    >
+                                                        <Edit size={18} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setMemberToDelete(item.id)}
+                                                        className="p-1.5 text-slate-400 hover:text-red-500 transition-colors"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        )}
+                                    </tr>
+                                ))}
+                                {(activeTab === 'members' ? members : accounts).length === 0 && (
+                                    <tr>
+                                        <td colSpan={5} className="text-center p-8 text-slate-400">
+                                            No {activeTab} found.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </div>
         </div>

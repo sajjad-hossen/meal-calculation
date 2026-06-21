@@ -131,44 +131,47 @@ const Deposits = () => {
                 {loading ? (
                     <div className="p-4 text-center">Loading deposits...</div>
                 ) : (
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Member</th>
-                                <th>Amount</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {deposits.map((d) => (
-                                <tr key={d.id}>
-                                    <td>{new Date(d.date).toLocaleDateString()}</td>
-                                    <td>{d.user?.name || d.userId}</td>
-                                    <td>{d.amount.toFixed(2)}</td>
-                                    <td>
-                                        {isManager && (
-                                            <div className="flex items-center gap-3">
-                                                <button
-                                                    onClick={() => handleEditDeposit(d)}
-                                                    className="text-slate-400 hover:text-primary-color transition-colors"
-                                                    title="Edit"
-                                                >
-                                                    <Edit size={18} />
-                                                </button>
-                                                <button
-                                                    onClick={() => setDepositToDelete(d.id)}
-                                                    className="text-slate-400 hover:text-red-500 transition-colors"
-                                                    title="Delete"
-                                                >
-                                                    <Trash2 size={18} />
-                                                </button>
-                                            </div>
-                                        )}
-                                    </td>
+                    <div className="w-full overflow-x-auto">
+                        <table className="w-full min-w-[500px]">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Member</th>
+                                    <th>Amount</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {deposits.map((d) => (
+                                    <tr key={d.id}>
+                                        <td className="whitespace-nowrap">{new Date(d.date).toLocaleDateString()}</td>
+                                        <td className="whitespace-nowrap">{d.user?.name || d.userId}</td>
+                                        <td>{d.amount.toFixed(2)}</td>
+                                        <td>
+                                            {isManager && (
+                                                <div className="flex items-center gap-3">
+                                                    <button
+                                                        onClick={() => handleEditDeposit(d)}
+                                                        className="text-slate-400 hover:text-primary-color transition-colors"
+                                                        title="Edit"
+                                                    >
+                                                        <Edit size={18} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setDepositToDelete(d.id)}
+                                                        className="text-slate-400 hover:text-red-500 transition-colors"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </div>
         </div>

@@ -3,7 +3,7 @@ import { fetchJson } from '../services/api';
 import type { AdminSummaryDto, PaymentRequestDto, SystemSettingsDto } from '../types';
 import {
     Home, Users, Calendar, ShieldAlert, CheckCircle, XCircle,
-    Bell, CreditCard, Mail, FileText, Clock, Check, X, Settings, Activity
+    Bell, CreditCard, Mail, FileText, Clock, Check, X, Settings, Activity, Plus, Trash
 } from 'lucide-react';
 import {
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RTooltip,
@@ -104,6 +104,31 @@ const AdminPanel = () => {
         { id: 'settings' as const, label: 'Settings', icon: Settings },
         { id: 'messes' as const, label: 'Messes', icon: Users },
     ];
+
+    const parsedSteps = (() => {
+        if (!settings?.process) return [];
+        try {
+            const parsed = JSON.parse(settings.process);
+            if (Array.isArray(parsed)) return parsed;
+        } catch { }
+        return [{ title: 'Information', desc: settings.process }];
+    })();
+
+    const updateStep = (index: number, field: 'title' | 'desc', value: string) => {
+        const newSteps = [...parsedSteps];
+        newSteps[index] = { ...newSteps[index], [field]: value };
+        setSettings({ ...settings!, process: JSON.stringify(newSteps) });
+    };
+
+    const addStep = () => {
+        const newSteps = [...parsedSteps, { title: '', desc: '' }];
+        setSettings({ ...settings!, process: JSON.stringify(newSteps) });
+    };
+
+    const removeStep = (index: number) => {
+        const newSteps = parsedSteps.filter((_, i) => i !== index);
+        setSettings({ ...settings!, process: JSON.stringify(newSteps) });
+    };
 
     return (
         <div style={{ margin: '-2rem -1rem', padding: '2rem 1rem', minHeight: '100vh', background: '#0a0a0d', color: '#f3f4f6', fontFamily: 'Inter, sans-serif', position: 'relative', overflow: 'hidden' }}>
@@ -317,11 +342,38 @@ const AdminPanel = () => {
                                 <h2 style={{ fontWeight: 700, fontSize: '1.1rem', color: '#f9fafb', margin: 0 }}>System Payment Settings</h2>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>Payment Process / Instructions</label>
-                                    <textarea value={settings.process || ''} onChange={e => setSettings({ ...settings, process: e.target.value })}
-                                        style={{ width: '100%', background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '1rem', fontSize: '0.875rem', color: '#e5e7eb', height: '120px', resize: 'vertical', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box', transition: 'border 0.2s' }}
-                                        placeholder="Enter payment instructions for managers..." />
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                                        <label style={{ fontSize: '0.7rem', fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Dynamic Payment Instructions (Steps)</label>
+                                        <button onClick={addStep} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.75rem', fontWeight: 700, color: '#34d399', background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)', padding: '0.3rem 0.6rem', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s' }}>
+                                            <Plus size={12} /> Add Step
+                                        </button>
+                                    </div>
+                                    
+                                    {parsedSteps.length === 0 && (
+                                        <div style={{ padding: '2rem', textAlign: 'center', color: '#6b7280', background: 'rgba(0,0,0,0.2)', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '12px' }}>
+                                            No steps configured. Click "Add Step" to create instructions.
+                                        </div>
+                                    )}
+
+                                    {parsedSteps.map((step, index) => (
+                                        <div key={index} style={{ display: 'flex', gap: '0.75rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1rem', position: 'relative' }}>
+                                            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(139,92,246,0.15)', color: '#c084fc', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.8rem', flexShrink: 0 }}>
+                                                {index + 1}
+                                            </div>
+                                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                                <input type="text" value={step.title || ''} onChange={e => updateStep(index, 'title', e.target.value)}
+                                                    style={{ width: '100%', background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '0.5rem 0.75rem', fontSize: '0.85rem', color: '#f9fafb', fontWeight: 600, outline: 'none' }}
+                                                    placeholder="Step Title (e.g. Send Payment)" />
+                                                <textarea value={step.desc || ''} onChange={e => updateStep(index, 'desc', e.target.value)}
+                                                    style={{ width: '100%', background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '0.5rem 0.75rem', fontSize: '0.8rem', color: '#d1d5db', height: '60px', resize: 'vertical', outline: 'none', fontFamily: 'inherit' }}
+                                                    placeholder="Step Description..." />
+                                            </div>
+                                            <button onClick={() => removeStep(index)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', width: '24px', height: '24px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} title="Remove Step">
+                                                <Trash size={12} />
+                                            </button>
+                                        </div>
+                                    ))}
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                                     {[

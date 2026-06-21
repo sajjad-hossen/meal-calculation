@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { fetchJson } from '../services/api';
-import { X, Send, CreditCard, Mail, FileText, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 
 interface PaymentRequestModalProps {
     messName: string;
@@ -40,102 +40,110 @@ const PaymentRequestModal: React.FC<PaymentRequestModalProps> = ({ messName, onC
     };
 
     return (
-        <div className="modal-backdrop" onClick={onClose}>
+        <div className="modal-backdrop" onClick={onClose} style={{ padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div
-                className="modal-box"
-                style={{ maxWidth: '480px' }}
+                className="modal-box animate-slide-up"
+                style={{ 
+                    backgroundColor: '#1a202c', 
+                    padding: '1.5rem', 
+                    borderRadius: '1rem', 
+                    width: '100%', 
+                    maxWidth: '32rem', 
+                    color: 'white', 
+                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                    border: 'none'
+                }}
                 onClick={e => e.stopPropagation()}
             >
-                {/* Header */}
-                <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-full bg-amber-100">
-                            <CreditCard size={22} className="text-amber-600" />
-                        </div>
-                        <div>
-                            <h2 className="text-lg font-bold">Request Payment Approval</h2>
-                            <p className="text-sm text-muted">Mess: <span className="font-semibold">{messName}</span></p>
-                        </div>
-                    </div>
-                    <button onClick={onClose} className="p-1 rounded hover:bg-gray-100 transition-colors">
-                        <X size={20} />
-                    </button>
+                {/* Header Section */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+                        <span>💳</span> Request Payment Approval
+                    </h2>
+                    <button onClick={onClose} style={{ color: '#9ca3af', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem' }} className="hover:text-white">✕</button>
                 </div>
 
                 {success ? (
-                    <div className="flex flex-col items-center justify-center py-8 gap-3 text-center">
-                        <CheckCircle size={48} className="text-green-500" />
-                        <p className="font-semibold text-green-700">Request submitted successfully!</p>
-                        <p className="text-sm text-muted">The admin will review your payment and approve shortly.</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem 0', textAlign: 'center', gap: '0.75rem' }}>
+                        <CheckCircle size={48} color="#10b981" />
+                        <p style={{ fontWeight: '600', color: '#10b981', margin: 0 }}>Request submitted successfully!</p>
+                        <p style={{ fontSize: '0.875rem', color: '#d1d5db', margin: 0 }}>The admin will review your payment and approve shortly.</p>
                     </div>
                 ) : (
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                        {error && (
-                            <div className="p-3 rounded bg-red-50 border border-red-200 text-red-700 text-sm">
-                                {error}
+                    <>
+                        <p style={{ fontSize: '0.875rem', color: '#d1d5db', marginBottom: '1.5rem', lineHeight: '1.5', margin: '0 0 1.5rem 0' }}>
+                            Mess: <span style={{ fontWeight: '600', color: 'white' }}>{messName}</span> <br />
+                            After completing your payment, fill in the details below. The admin will verify and unlock your mess operations.
+                        </p>
+
+                        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+                            {error && (
+                                <div style={{ padding: '0.75rem', borderRadius: '0.5rem', backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: '#ef4444', fontSize: '0.875rem' }}>
+                                    {error}
+                                </div>
+                            )}
+
+                            {/* Email */}
+                            <div>
+                                <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem', color: '#e5e7eb' }}>Email Address</label>
+                                <input
+                                    type="email"
+                                    placeholder="your@email.com"
+                                    value={managerEmail}
+                                    onChange={e => setManagerEmail(e.target.value)}
+                                    required
+                                    style={{ width: '100%', backgroundColor: '#2d3748', border: '1px solid #4b5563', borderRadius: '0.5rem', padding: '0.625rem', color: 'white', boxSizing: 'border-box' }}
+                                />
                             </div>
-                        )}
 
-                        <div className="info-banner">
-                            <p className="text-sm text-amber-800">
-                                After completing your payment, fill in the details below. The admin will verify and unlock your mess operations.
-                            </p>
-                        </div>
+                            {/* Transaction ID */}
+                            <div>
+                                <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem', color: '#e5e7eb' }}>Transaction ID</label>
+                                <input
+                                    type="text"
+                                    placeholder="TX-..."
+                                    value={transactionId}
+                                    onChange={e => setTransactionId(e.target.value)}
+                                    required
+                                    style={{ width: '100%', backgroundColor: '#2d3748', border: '1px solid #4b5563', borderRadius: '0.5rem', padding: '0.625rem', color: 'white', boxSizing: 'border-box' }}
+                                />
+                            </div>
 
-                        {/* Email */}
-                        <div className="form-group">
-                            <label className="form-label flex items-center gap-1.5">
-                                <Mail size={14} /> Gmail / Email
-                            </label>
-                            <input
-                                type="email"
-                                className="form-input"
-                                placeholder="your@gmail.com"
-                                value={managerEmail}
-                                onChange={e => setManagerEmail(e.target.value)}
-                                required
-                            />
-                        </div>
+                            {/* Note */}
+                            <div>
+                                <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem', color: '#e5e7eb' }}>Note (optional)</label>
+                                <textarea
+                                    placeholder="Any additional details..."
+                                    value={note}
+                                    onChange={e => setNote(e.target.value)}
+                                    style={{ width: '100%', backgroundColor: '#2d3748', border: '1px solid #4b5563', borderRadius: '0.5rem', padding: '0.625rem', color: 'white', height: '6rem', resize: 'vertical', boxSizing: 'border-box', fontFamily: 'inherit' }}
+                                />
+                            </div>
 
-                        {/* Transaction ID */}
-                        <div className="form-group">
-                            <label className="form-label flex items-center gap-1.5">
-                                <CreditCard size={14} /> Transaction ID
-                            </label>
-                            <input
-                                type="text"
-                                className="form-input"
-                                placeholder="e.g. TXN123456789"
-                                value={transactionId}
-                                onChange={e => setTransactionId(e.target.value)}
-                                required
-                            />
-                        </div>
-
-                        {/* Note */}
-                        <div className="form-group">
-                            <label className="form-label flex items-center gap-1.5">
-                                <FileText size={14} /> Note (optional)
-                            </label>
-                            <textarea
-                                className="form-input"
-                                rows={3}
-                                placeholder="Any additional information..."
-                                value={note}
-                                onChange={e => setNote(e.target.value)}
-                                style={{ resize: 'vertical' }}
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="btn btn-primary flex items-center justify-center gap-2 mt-2"
-                        >
-                            <Send size={16} />
-                            {loading ? 'Submitting...' : 'Submit Payment Request'}
-                        </button>
-                    </form>
+                            {/* Submit Button */}
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                style={{
+                                    width: '100%',
+                                    backgroundColor: loading ? '#4f46e5' : '#4f46e5',
+                                    color: 'white',
+                                    fontWeight: 'bold',
+                                    padding: '0.75rem',
+                                    borderRadius: '0.5rem',
+                                    border: 'none',
+                                    cursor: loading ? 'not-allowed' : 'pointer',
+                                    transition: 'background-color 0.2s',
+                                    marginTop: '0.5rem',
+                                    opacity: loading ? 0.7 : 1
+                                }}
+                                onMouseOver={(e) => { if (!loading) e.currentTarget.style.backgroundColor = '#4338ca'; }}
+                                onMouseOut={(e) => { if (!loading) e.currentTarget.style.backgroundColor = '#4f46e5'; }}
+                            >
+                                {loading ? 'SUBMITTING...' : 'SUBMIT PAYMENT REQUEST ↗'}
+                            </button>
+                        </form>
+                    </>
                 )}
             </div>
         </div>
