@@ -62,7 +62,8 @@ const Login = () => {
           <div className="auth-logo">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
               <rect width="32" height="32" rx="10" fill="url(#logoGrad)" />
-              <path d="M8 12h16M8 16h16M8 20h10" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
+              <circle cx="16" cy="16" r="9" fill="white" />
+              <circle cx="23" cy="9" r="4.5" fill="url(#logoGrad)" />
               <defs>
                 <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
                   <stop stopColor="#7C3AED" />
@@ -71,7 +72,7 @@ const Login = () => {
               </defs>
             </svg>
           </div>
-          <h1 className="auth-brand-title">MessMgr</h1>
+          <h1 className="auth-brand-title">BiteBoard</h1>
           <p className="auth-brand-subtitle">Meal Management System</p>
         </div>
 
