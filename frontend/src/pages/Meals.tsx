@@ -198,6 +198,7 @@ const Meals = () => {
                             <Plus size={18} />
                             Add Date
                         </button>
+                        {/* Clear All button disabled as per request
                         <button
                             className="btn btn-secondary"
                             onClick={() => setShowClearConfirm(true)}
@@ -207,6 +208,7 @@ const Meals = () => {
                             <Trash2 size={18} />
                             Clear All
                         </button>
+                        */}
                     </div>
                 )}
             </div>
