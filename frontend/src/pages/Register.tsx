@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Server, Coffee, Zap } from 'lucide-react';
+import { Server, Coffee, Zap, Hourglass } from 'lucide-react';
 import authService from '../services/authService';
 import './Auth.css';
 
@@ -187,7 +187,7 @@ const Register = () => {
             disabled={loading || !!success}
           >
             {loading ? (
-              <span className="auth-spinner" />
+              <Hourglass className="auth-hourglass" size={20} />
             ) : (
               <>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

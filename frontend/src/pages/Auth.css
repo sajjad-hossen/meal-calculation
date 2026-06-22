@@ -335,6 +335,19 @@
   to { transform: rotate(360deg); }
 }
 
+/* ── Hourglass ──────────────────────────────────────────── */
+.auth-hourglass {
+  animation: flipHourglass 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes flipHourglass {
+  0% { transform: rotate(0deg); }
+  45% { transform: rotate(180deg); }
+  50% { transform: rotate(180deg); }
+  95% { transform: rotate(360deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* ── Footer ─────────────────────────────────────────────── */
 .auth-footer-text {
   margin: 1.5rem 0 0 0;
