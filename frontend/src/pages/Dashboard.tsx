@@ -9,6 +9,9 @@ import { Navigate } from 'react-router-dom';
 const Dashboard = () => {
     const { user } = useAuth();
     const [summary, setSummary] = useState<SummaryDto | null>(null);
+    const [availableMonths, setAvailableMonths] = useState<{ month: number, year: number }[]>([]);
+    const [selectedMonth, setSelectedMonth] = useState<number | ''>('');
+    const [selectedYear, setSelectedYear] = useState<number | ''>('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -17,7 +20,26 @@ const Dashboard = () => {
             setLoading(false);
             return;
         }
-        fetchJson<SummaryDto>('/Summary')
+        fetchJson<{ month: number, year: number }[]>('/Summary/available-months')
+            .then(data => {
+                setAvailableMonths(data);
+            })
+            .catch(console.error);
+    }, [user]);
+
+    useEffect(() => {
+        if (user?.role === 'Admin') {
+            setLoading(false);
+            return;
+        }
+        
+        setLoading(true);
+        let url = '/Summary';
+        if (selectedMonth && selectedYear) {
+            url += `?month=${selectedMonth}&year=${selectedYear}`;
+        }
+
+        fetchJson<SummaryDto>(url)
             .then(data => {
                 setSummary(data);
                 setLoading(false);
@@ -26,7 +48,7 @@ const Dashboard = () => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, [user]);
+    }, [user, selectedMonth, selectedYear]);
 
     // Redirect Admin users immediately — must be before loading/error guards
     if (user?.role === 'Admin') {
@@ -44,9 +66,37 @@ const Dashboard = () => {
         { label: 'Total Cost', value: summary.totalCost.toFixed(2), icon: DollarSign, color: 'text-red-500' },
     ];
 
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
     return (
         <div>
-            <h1 className="text-2xl mb-4">Dashboard</h1>
+            <div className="flex justify-between items-center mb-4">
+                <h1 className="text-2xl">Dashboard</h1>
+                <div>
+                    <select 
+                        value={selectedMonth && selectedYear ? `${selectedYear}-${selectedMonth}` : ""}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (!val) {
+                                setSelectedMonth('');
+                                setSelectedYear('');
+                            } else {
+                                const [y, m] = val.split('-');
+                                setSelectedYear(parseInt(y));
+                                setSelectedMonth(parseInt(m));
+                            }
+                        }}
+                        className="p-2 bg-black border border-gray-700 rounded text-gray-200"
+                    >
+                        <option value="">All Time History</option>
+                        {availableMonths.map(item => (
+                            <option key={`${item.year}-${item.month}`} value={`${item.year}-${item.month}`}>
+                                {monthNames[item.month - 1]} {item.year}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
 
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

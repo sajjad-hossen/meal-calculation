@@ -22,12 +22,24 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<SummaryDto>> GetSummary()
+        public async Task<ActionResult<SummaryDto>> GetSummary([FromQuery] int? month, [FromQuery] int? year)
         {
             var users = await _context.Users.Where(u => u.Status == "Active" && u.IsCalculationMember).ToListAsync();
-            var deposits = await _context.Deposits.ToListAsync();
-            var meals = await _context.Meals.ToListAsync();
-            var bazarCosts = await _context.BazarCosts.ToListAsync();
+
+            var depositsQuery = _context.Deposits.AsQueryable();
+            var mealsQuery = _context.Meals.AsQueryable();
+            var bazarCostsQuery = _context.BazarCosts.AsQueryable();
+
+            if (month.HasValue && year.HasValue)
+            {
+                depositsQuery = depositsQuery.Where(d => d.Date.Month == month.Value && d.Date.Year == year.Value);
+                mealsQuery = mealsQuery.Where(m => m.Date.Month == month.Value && m.Date.Year == year.Value);
+                bazarCostsQuery = bazarCostsQuery.Where(b => b.Date.Month == month.Value && b.Date.Year == year.Value);
+            }
+
+            var deposits = await depositsQuery.ToListAsync();
+            var meals = await mealsQuery.ToListAsync();
+            var bazarCosts = await bazarCostsQuery.ToListAsync();
 
             var totalDeposit = deposits.Sum(d => d.Amount);
             var totalMeal = meals.Sum(m => m.MealCount);
@@ -71,6 +83,36 @@ namespace Backend.Controllers
             };
 
             return Ok(summary);
+        }
+
+        [HttpGet("available-months")]
+        public async Task<ActionResult<IEnumerable<object>>> GetAvailableMonths()
+        {
+            var depositMonths = await _context.Deposits
+                .Select(d => new { d.Date.Year, d.Date.Month })
+                .Distinct()
+                .ToListAsync();
+
+            var mealMonths = await _context.Meals
+                .Select(m => new { m.Date.Year, m.Date.Month })
+                .Distinct()
+                .ToListAsync();
+
+            var bazarMonths = await _context.BazarCosts
+                .Select(b => new { b.Date.Year, b.Date.Month })
+                .Distinct()
+                .ToListAsync();
+
+            var allMonths = depositMonths
+                .Concat(mealMonths)
+                .Concat(bazarMonths)
+                .Distinct()
+                .OrderByDescending(x => x.Year)
+                .ThenByDescending(x => x.Month)
+                .Select(x => new { month = x.Month, year = x.Year })
+                .ToList();
+
+            return Ok(allMonths);
         }
     }
 }

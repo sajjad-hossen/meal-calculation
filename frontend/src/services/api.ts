@@ -9,8 +9,10 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-// কোনো ভ্যারিয়েবল ছাড়া সরাসরি আপনার লাইভ রেন্ডার ব্যাকএন্ডের ইউআরএল বসিয়ে দিন
-export const API_BASE_URL = 'https://meal-calculation-backend.onrender.com/api';
+// Automatically use localhost when running `npm run dev`, and the Render URL when deployed live
+export const API_BASE_URL = import.meta.env.DEV 
+  ? 'http://localhost:5122/api' 
+  : 'https://meal-calculation-backend.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
