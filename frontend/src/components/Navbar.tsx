@@ -56,7 +56,7 @@ const Navbar = () => {
                 <div className="navbar-container flex items-center justify-between w-full px-6">
                     <div className="flex items-center gap-2 sm:gap-6 flex-shrink-0">
                         <div className="navbar-brand flex items-center gap-2">
-                            <h1 className="brand-title text-xl font-bold">MessMgr</h1>
+                            <h1 className="brand-title text-xl font-bold">BiteBoard</h1>
                             <span className="brand-subtitle text-sm text-gray-500 hidden lg:inline">Meal Management System</span>
                         </div>
                         {isAuthenticated && user && (

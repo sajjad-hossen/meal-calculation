@@ -24,7 +24,7 @@ const Footer = () => {
             </svg>
           </div>
           <div>
-            <span className="footer-app-name">MessMgr</span>
+            <span className="footer-app-name">BiteBoard</span>
             <span className="footer-app-sub">Meal Management System</span>
           </div>
         </div>
@@ -42,7 +42,7 @@ const Footer = () => {
               Sajjad Hossen
             </a>
           </p>
-          <p className="footer-copy">&copy; {year} MessMgr. All rights reserved.</p>
+          <p className="footer-copy">&copy; {year} BiteBoard. All rights reserved.</p>
         </div>
 
         {/* Right — Contact Links */}

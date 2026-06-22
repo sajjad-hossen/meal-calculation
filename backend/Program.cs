@@ -87,7 +87,7 @@ using (var scope = app.Services.CreateScope())
     {
         context.Database.Migrate();
 
-        var adminEmail = "admin@messmgr.com";
+        var adminEmail = "admin@biteboard.com";
         var adminUser = context.Users.IgnoreQueryFilters().FirstOrDefault(u => u.Email == adminEmail);
         if (adminUser == null)
         {

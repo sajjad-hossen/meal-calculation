@@ -28,7 +28,7 @@ const Sidebar = ({ isOpen, toggle }: SidebarProps) => {
             }}
         >
             <div className="p-3 flex items-center justify-between border-b border-border" style={{ borderColor: 'var(--border-color)' }}>
-                {isOpen && <h1 className="text-lg font-bold" style={{ color: 'var(--primary-color)' }}>MessMgr</h1>}
+                {isOpen && <h1 className="text-lg font-bold" style={{ color: 'var(--primary-color)' }}>BiteBoard</h1>}
                 <button onClick={toggle} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md">
                     <Menu size={18} />
                 </button>
