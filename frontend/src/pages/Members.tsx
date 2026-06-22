@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { fetchJson } from '../services/api';
+import toast from 'react-hot-toast';
 import type { UserAccount } from '../types';
 import { UserPlus, Edit, Trash2, Shield, UserCheck, UserX } from 'lucide-react';
 import AddMemberModal from '../components/AddMemberModal';
@@ -61,6 +62,7 @@ const Members = () => {
             });
             fetchMembers();
             setIsModalOpen(false);
+            toast.success('Member added successfully!');
         } catch (error) {
             console.error('Error adding member:', error);
             alert('Error adding member');
@@ -74,6 +76,7 @@ const Members = () => {
             });
             if (activeTab === 'members') fetchMembers(); else fetchAccounts();
             setMemberToDelete(null);
+            toast.success('Member deleted successfully!');
         } catch (error) {
             console.error('Error deleting member:', error);
         }
@@ -92,6 +95,7 @@ const Members = () => {
             if (activeTab === 'members') fetchMembers(); else fetchAccounts();
             setEditingMember(null);
             setIsModalOpen(false);
+            toast.success('Member updated successfully!');
         } catch (error) {
             console.error('Error editing member:', error);
             alert('Error editing member');
@@ -105,6 +109,7 @@ const Members = () => {
                 body: JSON.stringify({ ...user, isCalculationMember: !user.isCalculationMember }),
             });
             fetchAccounts();
+            toast.success('Membership toggled successfully!');
         } catch (error) {
             console.error('Error toggling membership:', error);
         }

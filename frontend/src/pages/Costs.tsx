@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchJson } from '../services/api';
+import toast from 'react-hot-toast';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import AddBazarCostModal from '../components/AddBazarCostModal';
 import ConfirmModal from '../components/ConfirmModal';
@@ -48,6 +49,7 @@ const Costs = () => {
         body: JSON.stringify(data),
       });
       fetchCosts();
+      toast.success('Bazar cost added successfully!');
     } catch (error) {
       console.error(error);
       alert('Error adding bazar cost');
@@ -74,6 +76,7 @@ const Costs = () => {
       fetchCosts();
       setEditingCost(null);
       setIsBazarModalOpen(false);
+      toast.success('Bazar cost updated successfully!');
     } catch (error) {
       console.error('Error editing bazar cost:', error);
       alert('Error editing bazar cost');
@@ -87,6 +90,7 @@ const Costs = () => {
       });
       fetchCosts();
       setBazarToDelete(null);
+      toast.success('Bazar cost deleted successfully!');
     } catch (error) {
       console.error(error);
     }

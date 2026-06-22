@@ -1,6 +1,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { fetchJson } from '../services/api';
+import toast from 'react-hot-toast';
 import { Plus, Check, Trash2 } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { useAuth } from '../components/AuthContext';
@@ -167,6 +168,7 @@ const Meals = () => {
             await fetchJson('/Meals', { method: 'DELETE' });
             setMealRows([]);
             setShowClearConfirm(false);
+            toast.success('All meals cleared successfully!');
         } catch (error) {
             console.error('Error clearing meals:', error);
             alert('Error clearing all meals');

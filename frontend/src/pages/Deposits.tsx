@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { fetchJson } from '../services/api';
+import toast from 'react-hot-toast';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import AddDepositModal from '../components/AddDepositModal';
 import ConfirmModal from '../components/ConfirmModal';
@@ -48,6 +49,7 @@ const Deposits = () => {
                 body: JSON.stringify(data),
             });
             fetchDeposits();
+            toast.success('Deposit added successfully!');
         } catch (error) {
             console.error(error);
             alert('Error adding deposit');
@@ -61,6 +63,7 @@ const Deposits = () => {
             });
             fetchDeposits();
             setDepositToDelete(null);
+            toast.success('Deposit deleted successfully!');
         } catch (error) {
             console.error(error);
         }
@@ -85,6 +88,7 @@ const Deposits = () => {
             fetchDeposits();
             setEditingDeposit(null);
             setIsModalOpen(false);
+            toast.success('Deposit updated successfully!');
         } catch (error) {
             console.error('Error editing deposit:', error);
             alert('Error editing deposit');
