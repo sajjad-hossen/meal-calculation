@@ -59,7 +59,7 @@ namespace Backend.Controllers
 
             _context.Meals.Add(meal);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetMeals), new { id = meal.Id }, meal);
+            return Ok(meal);
         }
 
         [Authorize(Roles = "Manager")]

@@ -46,7 +46,7 @@ namespace Backend.Controllers
             user.IsCalculationMember = true; // Manual addition is always a member
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);
+            return Ok(user);
         }
 
         [Authorize(Roles = "Manager")]
