@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { Server, Coffee, Zap } from 'lucide-react';
 import authService from '../services/authService';
 import { useAuth } from '../components/AuthContext';
 import './Auth.css';
@@ -9,9 +10,23 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [longLoading, setLongLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { setUser, user } = useAuth();
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (loading) {
+      // If loading takes more than 3 seconds, assume Render cold start
+      timer = setTimeout(() => {
+        setLongLoading(true);
+      }, 3000);
+    } else {
+      setLongLoading(false);
+    }
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   const from = location.state?.from?.pathname || '/';
 
@@ -135,6 +150,33 @@ const Login = () => {
             )}
           </button>
         </form>
+
+        {longLoading && (
+          <div className="mt-6 p-4 bg-indigo-50 dark:bg-slate-800 rounded-xl border border-indigo-100 dark:border-slate-700 animate-fade-in">
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className="flex items-center justify-center space-x-2 text-indigo-500">
+                <Coffee className="animate-bounce" size={24} />
+                <Server className="animate-pulse" size={24} />
+                <Zap className="animate-bounce" style={{ animationDelay: '0.2s' }} size={24} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-indigo-900 dark:text-indigo-300">Waking up the server...</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Since we use a free host, the server goes to sleep. It might take ~30 seconds to brew some coffee and wake up. Thanks for your patience!</p>
+              </div>
+              {/* Fake progress bar that fills up over 30 seconds */}
+              <div className="w-full h-1.5 bg-indigo-100 dark:bg-slate-700 rounded-full overflow-hidden mt-2">
+                <div className="h-full bg-indigo-500 rounded-full" style={{ width: '100%', animation: 'fillProgress 30s ease-out forwards' }}></div>
+              </div>
+            </div>
+            <style>{`
+              @keyframes fillProgress {
+                0% { width: 0%; }
+                100% { width: 95%; }
+              }
+              .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+            `}</style>
+          </div>
+        )}
 
         {!user && (
           <p className="auth-footer-text">
