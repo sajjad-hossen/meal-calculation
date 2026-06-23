@@ -1,9 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Backend.Dtos
 {
     public class RegisterDto
     {
         public string Name { get; set; } = string.Empty;
+        
+        [Required]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
         public string Email { get; set; } = string.Empty;
+        
         public string Password { get; set; } = string.Empty;
         public string Role { get; set; } = "Member";
         public string MessName { get; set; } = string.Empty;

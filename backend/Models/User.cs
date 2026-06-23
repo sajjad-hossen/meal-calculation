@@ -22,6 +22,10 @@ namespace Backend.Models
         public bool IsCalculationMember { get; set; } = false;
         public int MessId { get; set; }
         public Mess? Mess { get; set; }
+        
+        public string? ResetPasswordToken { get; set; }
+        public DateTime? ResetPasswordTokenExpiryTime { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

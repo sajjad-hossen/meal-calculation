@@ -31,6 +31,13 @@ const Register = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
     setLoading(true);
     try {
       const response: any = await authService.register(name, email, password, messName);
