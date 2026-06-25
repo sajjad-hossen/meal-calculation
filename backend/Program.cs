@@ -25,6 +25,7 @@ builder.Services.AddDbContext<MessContext>(options =>
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ITenantService, TenantService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Fail fast with a clear message if the JWT key is missing,
 // instead of a cryptic exception from Encoding.UTF8.GetBytes(null).

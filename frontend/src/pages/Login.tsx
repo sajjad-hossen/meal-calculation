@@ -129,6 +129,11 @@ const Login = () => {
                 required
               />
             </div>
+            <div className="flex justify-end mt-2">
+              <Link to="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
+                Forgot Password?
+              </Link>
+            </div>
           </div>
 
           <button

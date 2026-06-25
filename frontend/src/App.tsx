@@ -8,6 +8,8 @@ import Deposits from './pages/Deposits';
 import Costs from './pages/Costs';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Unauthorized from './pages/Unauthorized';
 import AdminPanel from './pages/AdminPanel';
 import { AuthProvider } from './components/AuthContext';
@@ -23,6 +25,8 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
             
             {/* Protected Routes for all authenticated users */}

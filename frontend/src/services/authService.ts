@@ -43,6 +43,16 @@ class AuthService {
         }
     }
 
+    async forgotPassword(email: string) {
+        const response = await api.post('/auth/forgot-password', { email });
+        return response.data;
+    }
+
+    async resetPassword(email: string, token: string, newPassword: string) {
+        const response = await api.post('/auth/reset-password', { email, token, newPassword });
+        return response.data;
+    }
+
     async refreshToken(): Promise<{ data: { accessToken: string, refreshToken: string } }> {
         const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) {
