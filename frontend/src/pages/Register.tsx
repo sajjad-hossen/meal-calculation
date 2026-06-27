@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Server, Coffee, Zap, Hourglass } from 'lucide-react';
 import authService from '../services/authService';
+import Lottie from 'lottie-react';
+import hourglassAnimation from '../assets/hourglass.json';
 import './Auth.css';
 
 const Register = () => {
@@ -58,6 +60,13 @@ const Register = () => {
       <div className="auth-blob auth-blob-3" />
 
       <div className="auth-card auth-card-wide animate-slide-up">
+        {loading && (
+          <div className="auth-overlay">
+            <Lottie animationData={hourglassAnimation} loop={true} style={{ width: 150 }} />
+            <p style={{ fontWeight: 600, color: '#312e81', marginTop: '1rem', fontFamily: "'Poppins', sans-serif" }}>Please wait...</p>
+          </div>
+        )}
+
         {/* Branding */}
         <div className="auth-brand">
           <div className="auth-logo">

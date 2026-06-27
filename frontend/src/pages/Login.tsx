@@ -3,6 +3,8 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Server, Coffee, Zap, Hourglass } from 'lucide-react';
 import authService from '../services/authService';
 import { useAuth } from '../components/AuthContext';
+import Lottie from 'lottie-react';
+import hourglassAnimation from '../assets/hourglass.json';
 import './Auth.css';
 
 const Login = () => {
@@ -57,6 +59,13 @@ const Login = () => {
       <div className="auth-blob auth-blob-3" />
 
       <div className="auth-card animate-slide-up">
+        {loading && (
+          <div className="auth-overlay">
+            <Lottie animationData={hourglassAnimation} loop={true} style={{ width: 150 }} />
+            <p style={{ fontWeight: 600, color: '#312e81', marginTop: '1rem', fontFamily: "'Poppins', sans-serif" }}>Please wait...</p>
+          </div>
+        )}
+
         {/* Branding */}
         <div className="auth-brand">
           <div className="auth-logo">
