@@ -15,7 +15,7 @@ const LandingPage = () => {
       
       <header className="landing-header">
         <div className="landing-logo">
-          <span className="logo-icon">🍽️</span> MealCalc
+          <span className="logo-icon">🍽️</span> BiteBoard
         </div>
         <nav className="landing-nav">
           {user ? (
@@ -76,7 +76,7 @@ const LandingPage = () => {
       </main>
 
       <section id="features" className="features-section">
-        <h2 className="section-title">Why Choose MealCalc?</h2>
+        <h2 className="section-title">Why Choose BiteBoard?</h2>
         <div className="features-grid">
           <div className="feature-card glass-card">
             <div className="feature-icon">📊</div>
@@ -97,7 +97,7 @@ const LandingPage = () => {
       </section>
       
       <footer className="landing-footer">
-        <p>&copy; {new Date().getFullYear()} MealCalc. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} BiteBoard. All rights reserved.</p>
       </footer>
     </div>
   );
