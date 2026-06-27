@@ -19,8 +19,14 @@ namespace Backend.Filters
                 var mess = await dbContext.Messes.FindAsync(messId.Value);
                 if (mess != null)
                 {
-                    var currentMonth = DateTime.UtcNow.ToString("yyyy-MM");
-                    if (mess.LastPaidMonth != currentMonth)
+                    var now = DateTime.UtcNow;
+                    var currentMonth = now.ToString("yyyy-MM");
+                    var previousMonth = now.AddMonths(-1).ToString("yyyy-MM");
+
+                    bool hasAccess = mess.LastPaidMonth == currentMonth || 
+                                     (now.Day <= 5 && mess.LastPaidMonth == previousMonth);
+
+                    if (!hasAccess)
                     {
                         context.Result = new ObjectResult(new { message = "Payment required for the current month to perform operations." })
                         {

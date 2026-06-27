@@ -27,8 +27,12 @@ namespace Backend.Controllers
             var mess = await _context.Messes.FindAsync(messId.Value);
             if (mess == null) return NotFound();
 
-            var currentMonth = DateTime.UtcNow.ToString("yyyy-MM");
-            var isPaid = mess.LastPaidMonth == currentMonth;
+            var now = DateTime.UtcNow;
+            var currentMonth = now.ToString("yyyy-MM");
+            var previousMonth = now.AddMonths(-1).ToString("yyyy-MM");
+            
+            var isPaid = mess.LastPaidMonth == currentMonth || 
+                         (now.Day <= 5 && mess.LastPaidMonth == previousMonth);
 
             return Ok(new { isPaidForCurrentMonth = isPaid });
         }
