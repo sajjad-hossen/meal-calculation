@@ -42,7 +42,7 @@ const Navbar = () => {
     };
 
     const navItems = [
-        { to: '/', icon: LayoutDashboard, label: 'Dashboard', show: isAuthenticated && user?.role !== 'Admin' },
+        { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', show: isAuthenticated && user?.role !== 'Admin' },
         { to: '/members', icon: Users, label: 'Members', show: isAuthenticated && user?.role !== 'Admin' },
         { to: '/meals', icon: Utensils, label: 'Meals', show: isAuthenticated && user?.role !== 'Admin' },
         { to: '/deposits', icon: Wallet, label: 'Deposits', show: isAuthenticated && user?.role !== 'Admin' },
@@ -93,7 +93,7 @@ const Navbar = () => {
                             <NavLink
                                 key={item.to}
                                 to={item.to}
-                                end={item.to === '/'}
+                                end={item.to === '/dashboard'}
                                 className={({ isActive }) =>
                                     `nav-button flex items-center gap-1 p-2 rounded transition-colors whitespace-nowrap ${isActive ? 'nav-button-active bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`
                                 }

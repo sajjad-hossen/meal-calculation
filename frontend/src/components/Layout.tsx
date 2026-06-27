@@ -10,7 +10,7 @@ interface LayoutProps {
     children: ReactNode;
 }
 
-const AUTH_ROUTES = ['/login', '/register'];
+const AUTH_ROUTES = ['/login', '/register', '/'];
 
 const Layout = ({ children }: LayoutProps) => {
     const location = useLocation();

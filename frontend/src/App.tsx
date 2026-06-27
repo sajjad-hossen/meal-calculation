@@ -12,6 +12,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Unauthorized from './pages/Unauthorized';
 import AdminPanel from './pages/AdminPanel';
+import LandingPage from './pages/LandingPage';
 import { AuthProvider } from './components/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import './App.css';
@@ -28,9 +29,10 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
+            <Route path="/" element={<LandingPage />} />
             
             {/* Protected Routes for all authenticated users */}
-            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/members" element={<ProtectedRoute><Members /></ProtectedRoute>} />
             <Route path="/meals" element={<ProtectedRoute><Meals /></ProtectedRoute>} />
             <Route path="/deposits" element={<ProtectedRoute><Deposits /></ProtectedRoute>} />

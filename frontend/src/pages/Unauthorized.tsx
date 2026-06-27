@@ -10,7 +10,7 @@ const Unauthorized = () => {
         You do not have permission to view this page. This action is restricted to managers.
       </p>
       <Link
-        to="/"
+        to="/dashboard"
         className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
       >
         Return to Dashboard

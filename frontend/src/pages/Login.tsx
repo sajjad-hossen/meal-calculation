@@ -28,7 +28,7 @@ const Login = () => {
     return () => clearTimeout(timer);
   }, [loading]);
 
-  const from = location.state?.from?.pathname || '/';
+  const from = location.state?.from?.pathname || '/dashboard';
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +37,7 @@ const Login = () => {
     try {
       const response = await authService.login(email, password);
       setUser(response.user);
-      if (response.user.role === 'Admin' && from === '/') {
+      if (response.user.role === 'Admin' && from === '/dashboard') {
         navigate('/admin', { replace: true });
       } else {
         navigate(from, { replace: true });
